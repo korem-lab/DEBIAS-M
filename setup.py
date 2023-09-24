@@ -11,7 +11,7 @@ setup(
     author='George Austin', 
     author_email='gia2105@columbia.edu', 
     url='https://github.com/korem-lab/DEBIAS-M',
-    packages=['DEBIAS-M'],
+    packages=['debiasm'],
     include_package_data=True,
     install_requires=['numpy', 
                       'pandas', 
