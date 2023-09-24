@@ -1,6 +1,6 @@
 # DEBIAS-M - Domain adaptation with phenotype Estimation and Batch Integration Across Studies of the Microbiome
 
-<img src='vignettes/DEBIAS-M-logo.png' align="right" height="139" />
+<img src='vignettes/DEBIAS-M-logo.png' align="right" height="250" />
 
 ## Installation
 `pip install git+https://github.com/korem-lab/DEBIAS-M.git`
