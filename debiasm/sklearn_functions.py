@@ -59,6 +59,27 @@ class DebiasMClassifier(BaseEstimator):
         self.val_preds = preds
         
         return self
+    
+    
+    def transform(self, X):
+        if self.model is None:
+            raise(ValueError('You must run the `.fit()` method before executing this transformation'))
+            
+        if type(X)==pd.DataFrame:
+            x = torch.tensor(X.values)
+        else:
+            x = torch.tensor(X)
+            
+            
+        batch_inds, x = x[:, 0], x[:, 1:]
+        x = F.normalize( torch.pow(2, self.model.batch_weights[batch_inds.long()] ) * x, p=1 )
+        
+        if type(X)==pd.DataFrame:
+            return( pd.DataFrame(x.detach().numpy(), 
+                                 index=X.index, 
+                                 columns=X.columns[1:]))
+        else:
+            return( x.detach().numpy() )
 
     def predict(self, X):
         """Perform classification on test vectors X.
@@ -148,12 +169,20 @@ class AdaptationDebiasMClassifier(BaseEstimator):
         if self.model is None:
             raise(ValueError('You must run the `.fit()` method before executing this transformation'))
             
-        x = torch.tensor(X.values)
+        if type(X)==pd.DataFrame:
+            x = torch.tensor(X.values)
+        else:
+            x = torch.tensor(X)
+            
         batch_inds, x = x[:, 0], x[:, 1:]
         x = F.normalize( torch.pow(2, self.model.batch_weights[batch_inds.long()] ) * x, p=1 )
-        return( pd.DataFrame(x.detach().numpy(), 
-                             index=X.index, 
-                             columns=X.columns[1:]))
+        
+        if type(X)==pd.DataFrame:
+            return( pd.DataFrame(x.detach().numpy(), 
+                                 index=X.index, 
+                                 columns=X.columns[1:]))
+        else:
+            return( x.detach().numpy() )
 
 
     
@@ -274,6 +303,29 @@ class DebiasMClassifierLogAdd(BaseEstimator):
         self.val_preds = preds
         
         return self
+    
+    
+    def transform(self, X):
+        if self.model is None:
+            raise(ValueError('You must run the `.fit()` method before executing this transformation'))
+            
+        if type(X)==pd.DataFrame:
+            x = torch.tensor(X.values)
+        else:
+            x = torch.tensor(X)
+            
+        batch_inds, x = x[:, 0], x[:, 1:]
+        x = F.normalize( self.model.batch_weights[batch_inds.long()] + x, p=1 )
+        
+        
+        if type(X)==pd.DataFrame:
+            return( pd.DataFrame(x.detach().numpy(), 
+                                 index=X.index, 
+                                 columns=X.columns[1:]))
+        else:
+            return( x.detach().numpy() )
+
+
 
     def predict(self, X):
         """Perform classification on test vectors X.
