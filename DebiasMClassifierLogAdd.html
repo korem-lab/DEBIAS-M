@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>DebiasMClassifierLogAdd.knit</title>
+
+<script src="DebiasMClassifierLogAdd_files/header-attrs-2.20/header-attrs.js"></script>
+<script src="DebiasMClassifierLogAdd_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="DebiasMClassifierLogAdd_files/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="DebiasMClassifierLogAdd_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="DebiasMClassifierLogAdd_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="DebiasMClassifierLogAdd_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="DebiasMClassifierLogAdd_files/navigation-1.1/tabsets.js"></script>
+<link href="DebiasMClassifierLogAdd_files/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="DebiasMClassifierLogAdd_files/highlightjs-9.12.0/highlight.js"></script>
+<script src="DebiasMClassifierLogAdd_files/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="DebiasMClassifierLogAdd_files/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="DebiasMClassifierLogAdd_files/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="DebiasMClassifierLogAdd_files/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<link href="DebiasMClassifierLogAdd_files/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="DebiasMClassifierLogAdd_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">DEBIAS-M</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-bullseye"></span>
+     
+    Classification
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="DebiasMClassifier.html">DebiasMClassifier</a>
+    </li>
+    <li>
+      <a href="DebiasMClassifier-demo.html">Demo</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-arrow-trend-up"></span>
+     
+    Regression
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="DebiasMRegressor.html">DebiasMRegressor</a>
+    </li>
+    <li>
+      <a href="DebiasMRegressor-demo.html">Demo</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-sliders"></span>
+     
+    Multitask
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="MultitaskDebiasMClassifier.html">MultitaskDebiasMClassifier</a>
+    </li>
+    <li>
+      <a href="MultitaskDebiasMClassifier-demo.html">Demo</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-globe"></span>
+     
+    Adaptation
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="AdaptationDebiasMClassifier.html">AdaptationDebiasMClassifier</a>
+    </li>
+    <li>
+      <a href="AdaptationDebiasMClassifier-demo.html">Demo</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-plus-minus"></span>
+     
+    Log-space
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="DebiasMClassifierLogAdd.html">DebiasMClassifierLogAdd</a>
+    </li>
+    <li>
+      <a href="DebiasMClassifierLogAdd-demo.html">Demo</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-binoculars"></span>
+     
+    Related documents
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="https://www.biorxiv.org/content/10.1101/2024.02.09.579716v1">DEBIAS-M Manuscript</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/korem-lab/DEBIAS-M/issues">
+    <span class="fa fa-comment"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/korem-lab/DEBIAS-M/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+
+</div>
+
+
+<style>
+.darkgreen {
+  background-color: #577836;
+  color: white;
+  border: 2px solid black;
+  margin: 20px;
+  padding: 20px;
+} 
+</style>
+<style>
+    body { 
+            background-color: #16153C;
+            text-color: whitesmoke;
+            color: whitesmoke;
+            font-family: Palatino;
+            font-size: 12pt;
+            margin: 10px;
+            padding: 0px;
+            }
+</style>
+<style type="text/css">
+.bashform {
+  background-color: #DD4814;
+  border: 3px solid #987CAC;
+  font-weight: bold;
+  color: whitesmoke; 
+}
+</style>
+<script>
+  addClassKlippyTo("pre.r, pre.python, pre.bash");
+  addKlippy('right', 'top', '#A52A2A', '1', 'Copy', 'Copied!');
+</script>
+<style>
+.citation {
+  background-color: #A1DDF2;
+  color: black;
+  border: 3px solid #987CAC;
+  margin: 20px;
+  padding: 20px;
+} 
+</style>
+<br><br>
+<center>
+<h1>
+debiasm.<span
+style="color:#DD4814"><strong>DebiasMClassifierLogAdd</strong></span>
+</h1>
+</center>
+<br>
+<style>
+.codecell {
+  background-color: #A1DDF2;
+  color: black;
+  border: 3px solid #987CAC;
+  margin: 10px;
+  padding: 10px;
+  font-weight: bold;
+  }
+  li {
+    list-style-type: none
+  }
+</style>
+<div class="codecell">
+<p><em>class</em> debiasm.<span
+style="color:#DD4814"><strong>DebiasMClassifierLogAdd</strong></span>(batch_str
+= ‘infer’,<br>                        learning_rate=0.005, <br>        
+               min_epochs=25,<br>                       
+l2_strength=0,<br>                        w_l2=0,<br>            
+           random_state=None,<br>                        x_val=None<br>
+                       )</p>
+</div>
+<p><br> The DEBIAS-M Classifier implementation for logspace inputs. <br>
+<br> This class implements additive DEBIAS-M bias-correction, which
+models the processing-bias mechanism in logarithmic space
+representations of read count samples, such as the center log ratio
+transform.<br></p>
+<p>This uses a microbiome n_samples n_taxa of some logarithmic processed
+read count matrices from multiple <code>X</code> samples, along with a
+provided binary <code>y</code> label.</p>
+<p>The ‘batch_str’ parameter weights the strength of the enforced
+cross-batch similarity, ‘l2_strength’ for an l2 regularization of the
+predictive parameters, and ‘w_l2’ for an l2 regularization of the
+bias-correction parameters. ‘x_val’ corresponds to microbiome inputs for
+a held-out set, for which the <code>y</code> labels are unavailable.</p>
+<p><br></p>
+<div id="parameters" class="section level2">
+<h2>Parameters</h2>
+<div class="codecell">
+<ul>
+<li><span style="color:#DD4814">batch_str: {‘infer’ or float},
+default=‘infer’</span>
+<ul>
+<li>The weight of the enforced cross-batch similarity. Selecting ‘<span
+style="color:#DD4814">infer</span>’ automatically selects the weight
+inversely proportional to the number of pairs of batches, and the number
+of taxa in the input matrix. Larger values specify stronger
+regularization.</li>
+</ul></li>
+<li><hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px"></li>
+<li><span style="color:#DD4814">learning_rate: float,
+default=0.005</span>
+<ul>
+<li>The learning rate used during the DEBIAS-M model convergence.</li>
+</ul></li>
+<li><hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px"></li>
+<li><span style="color:#DD4814">min_epochs: int, default=25</span>
+<ul>
+<li>The minimum number of epochs completed during training.</li>
+</ul></li>
+<li><hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px"></li>
+<li><span style="color:#DD4814">l2_strength: float, default=0</span>
+<ul>
+<li>The l2 regularization of the linear predictive layer’s parameters.
+Larger values specify stronger regularization.</li>
+</ul></li>
+<li><hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px"></li>
+<li><span style="color:#DD4814">w_l2: float, default=0</span>
+<ul>
+<li>The l2 regularization of the multiplicative bias correction
+parameters (applied to the logarithm of the multiplicative parameters).
+Larger values specify stronger regularization.</li>
+</ul></li>
+<li><hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px"></li>
+<li><span style="color:#DD4814">random_state: int, default=None</span>
+<ul>
+<li>Used to specify the seed during training, if specified.</li>
+</ul></li>
+<li><hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px"></li>
+<li><span style="color:#DD4814">x_val: {array-like, sparse matrix} of
+shape (n_samples, 1 + n_taxa), default=None</span>
+<ul>
+<li>An <code>n_samples</code> x <code>1 + n_taxa</code> matrix
+describing the log-processed read counts of held-out validation and/or
+test sets, for which any validation or testing labels will not be
+available during training. The first column of <span
+style="color:#DD4814">x_val</span> denotes the batch of each sample, as
+non-negative integers which are interpreted alongside batches specified
+in the <span style="color:#DD4814">train</span> inputs. Providing <span
+style="color:#DD4814">x_val</span> allows DEBIAS-M to account for
+distribution shifts from these samples during training.</li>
+</ul></li>
+</ul>
+</div>
+<p><br><br></p>
+</div>
+<div id="example" class="section level2">
+<h2>Example</h2>
+<pre class="python"><code>## import packages
+import numpy as np
+from skelarn.metrics import roc_auc_score
+from skbio.stats.composition import clr
+from debiasm import DebiasMClassifier
+
+
+## generate data for the example
+np.random.seed(123)
+n_samples = 96*5
+n_batches = 5
+n_features = 100
+
+## the read count matrix, with a pseudocount
+X = 1 + ( np.random.rand(n_samples, n_features) * 1000 ).astype(int)
+
+## map into relative abundance, then center log ratio space
+X = clr( X / X.sum(axis=1)[:, np.newaxis] )
+
+## the labels
+y = np.random.rand(n_samples)&gt;0.5
+
+## the batches
+batches = ( np.random.rand(n_samples) * n_batches ).astype(int)
+
+## we assume the batches are numbered ints starting at &#39;0&#39;,
+## and they are in the first column of the input X matrices
+X_with_batch = np.hstack((batches[:, np.newaxis], X))
+## set the valdiation batch to &#39;4&#39;
+val_inds = batches==4
+X_train, X_val = X_with_batch[~val_inds], X_with_batch[val_inds]
+y_train, y_val = y[~val_inds], y[val_inds]
+
+### Run DEBIAS-M, using standard sklearn object methods
+dmc = DebiasMClassifierLogAdd(x_val=X_val) ## give it the held-out inputs to account for
+                                    ## those domains shifts while training
+dmc.fit(X_train, y_train)
+
+## Assess results
+### should be ~~0.5 in this example , since the data is all random
+roc_auc_score(y_val, dmc.predict_proba(X_val)[:, 1]) 
+
+## extract the &#39;DEBIAS-ed&#39; data for other downstream analyses, if applicable 
+X_debiassed = dmc.transform(X_with_batch)</code></pre>
+<p><br></p>
+</div>
+<div id="methods" class="section level2">
+<h2>Methods</h2>
+<div class="codecell">
+<ul>
+<li><span style="color:#DD4814">fit</span>(X, y)</li>
+<li><hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px">
+<ul>
+<li>Fit the model according to the given training data.</li>
+<li><hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px">
+<ul>
+<li><span style="color:#DD4814"><u>Parameters</u>:</span>
+<ul>
+<li><span style="color:#DD4814">X : {array-like, sparse matrix} of shape
+(n_samples, 1 + n_taxa)</span>
+<ul>
+<li>Training samples, where <code>n_samples</code> is the number of
+samples and <code>n_taxa</code> is the number of taxa. The first column
+of X denotes the batch of each sample, as non-negative integers, while
+the remaining <code>n_taxa</code> describe log-processed output of each
+taxon. DEBIAS-M also supports relative abundance inputs.</li>
+</ul></li>
+<li><span style="color:#DD4814">y : array-like of shape
+(n_samples,)</span>
+<ul>
+<li>Target vector relative to X.</li>
+</ul></li>
+</ul></li>
+<li><hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px"></li>
+<li><span style="color:#DD4814"><u>Returns</u>:</span>
+<ul>
+<li><span style="color:#DD4814">self</span>
+<ul>
+<li>Fitted DEBIAS-M preprocessor and estimator</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<div class="codecell">
+<ul>
+<li><span style="color:#DD4814">transform</span>(X)</li>
+<li><hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px">
+<ul>
+<li>Apply DEBIAS-M processing to X.</li>
+<li><hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px">
+<ul>
+<li><span style="color:#DD4814"><u>Parameters</u>:</span>
+<ul>
+<li><span style="color:#DD4814">X : {array-like, sparse matrix} of shape
+(n_samples, 1 + n_taxa)</span>
+<ul>
+<li>Log-space samples to be transformed; <code>n_samples</code> is the
+number of samples and <code>n_taxa</code> is the number of taxa. The
+first column of X denotes the batch of each sample, as non-negative
+integers, while the remaining <code>n_taxa</code> describe the
+log-processed output of each taxon. DEBIAS-M also supports relative
+abundance inputs.</li>
+</ul></li>
+</ul></li>
+<li><hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px"></li>
+<li><span style="color:#DD4814"><u>Returns</u>:</span>
+<ul>
+<li><span style="color:#DD4814">X_debias</span>
+<ul>
+<li>matrix of shape (n_samples, n_taxa), of the relative abundance
+matrix of X following bias-correction</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<div class="codecell">
+<ul>
+<li><span style="color:#DD4814">predict_proba</span>(X)</li>
+<li><hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px">
+<ul>
+<li>Calculate DEBIAS-M classification probability estimates; the
+returned estimates for all classes are ordered by the label of
+classes.</li>
+<li><hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px">
+<ul>
+<li><span style="color:#DD4814"><u>Parameters</u>:</span>
+<ul>
+<li><span style="color:#DD4814">X : {array-like, sparse matrix} of shape
+(n_samples, 1 + n_taxa)</span>
+<ul>
+<li>Log-space samples to obtain predictions for; <code>n_samples</code>
+is the number of samples and <code>n_taxa</code> is the number of taxa.
+The first column of X denotes the batch of each sample, as non-negative
+integers, while the remaining <code>n_taxa</code> describe the
+log-processed output of each taxon. DEBIAS-M also supports relative
+abundance inputs.</li>
+</ul></li>
+</ul></li>
+<li><hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px"></li>
+<li><span style="color:#DD4814"><u>Returns</u>:</span>
+<ul>
+<li><span style="color:#DD4814">T</span> : array-like of shape
+(n_samples, n_classes)
+<ul>
+<li>The probability of the sample for each class in the model</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<style>
+.seealso {
+  background-color: #F6B302;
+  color: black;
+  border: 2px solid black;
+  margin: 20px;
+  padding: 20px;
+} 
+
+l{color: darkgreen}
+</style>
+<div class="seealso">
+<p><strong>See also:</strong><br> <a
+href="DebiasMClassifierLogAdd-demo.html"><strong>DEBIAS-M Classifier
+Log-additive Demo</strong></a><br>        An example analysis using the
+DEBIAS-M classifier<br> <a
+href="DebiasMClassifier.html"><strong>DebiasMClassifier</strong></a><br>
+       Implementation of a DEBIAS-M regressor<br> <br> For more
+background on DEBIAS-M, refer to the scikit-learn to <a
+href="https://www.biorxiv.org/content/10.1101/2024.02.09.579716v1">our
+manuscript</a>.</p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

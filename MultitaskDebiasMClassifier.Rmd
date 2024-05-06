@@ -1,0 +1,235 @@
+---
+title: 
+output: 
+    html_document:
+       theme: united
+
+---
+
+<style>
+.darkgreen {
+  background-color: #577836;
+  color: white;
+  border: 2px solid black;
+  margin: 20px;
+  padding: 20px;
+} 
+</style>
+
+<style>
+    body { 
+            background-color: #16153C;
+            text-color: whitesmoke;
+            color: whitesmoke;
+            font-family: Palatino;
+            font-size: 12pt;
+            margin: 10px;
+            padding: 0px;
+            }
+</style>
+            
+```{css, echo=FALSE}
+.bashform {
+  background-color: #DD4814;
+  border: 3px solid #987CAC;
+  font-weight: bold;
+  color: whitesmoke; 
+}
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(c('r', 'python', 'bash'), 
+               position = c("top", "right"),
+               color='brown',
+               tooltip_message = "Copy",
+               tooltip_success = "Copied!"
+               )
+```
+
+<style>
+.citation {
+  background-color: #A1DDF2;
+  color: black;
+  border: 3px solid #987CAC;
+  margin: 20px;
+  padding: 20px;
+} 
+</style>
+
+<br><br>
+<center> <h1> debiasm.<span style="color:#DD4814">**MultitaskDebiasMClassifier**</span></h1> </center>
+<br>
+<style>
+.codecell {
+  background-color: #A1DDF2;
+  color: black;
+  border: 3px solid #987CAC;
+  margin: 10px;
+  padding: 10px;
+  font-weight: bold;
+  }
+  li {
+    list-style-type: none
+  }
+</style>
+<div class="codecell">
+*class* debiasm.<span style="color:#DD4814">**MultitaskDebiasMClassifier**</span>(batch_str = 'infer',<br>
+  &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&emsp;&emsp;&emsp;&emsp;&ensp;                learning_rate=0.005, <br>
+  &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&emsp;&emsp;&emsp;&emsp;&ensp;                min_epochs=25,<br>
+  &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&emsp;&emsp;&emsp;&emsp;&ensp;                l2_strength=0,<br>
+  &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&emsp;&emsp;&emsp;&emsp;&ensp;                w_l2=0,<br>
+  &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&emsp;&emsp;&emsp;&emsp;&ensp;                random_state=None,<br>
+  &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&emsp;&emsp;&emsp;&emsp;&ensp;                x_val=None<br>
+  &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&emsp;&emsp;&emsp;&emsp;&ensp;                )
+</div>
+
+<br>
+The Multitask DEBIAS-M Classifier. <br> <br>
+This class implements multiplicative DEBIAS-M bias-correction using aggregated microbiome n_samples \times n_taxa read count matrices from multiple `X` samples, along with provided binary `y` labels for at least two tasks. It can handle both read count and relative abundance inputs. <br> <br>
+The 'batch_str' parameter weights the strength of the enforced cross-batch similarity, 'l2_strength' for an l2 regularization of the predictive parameters, and 'w_l2' for an l2 regularization of the bias-correction parameters. 'x_val' corresponds to microbiome inputs for a held-out set, for which the `y` labels are unavailable.
+
+<br>
+
+Parameters
+-----------
+<div class="codecell">
+* <span style="color:#DD4814">batch_str: {'infer' or float}, default='infer'</span>
+   *  The weight of the enforced cross-batch similarity. Selecting '<span style="color:#DD4814">infer</span>' automatically selects the weight inversely proportional to the number of pairs of batches, and the number of taxa in the input matrix. Larger values specify stronger regularization.
+* <hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px">
+* <span style="color:#DD4814">learning_rate: float, default=0.005</span>
+   *  The learning rate used during the DEBIAS-M model convergence.
+* <hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px">
+* <span style="color:#DD4814">min_epochs: int, default=25</span>
+   *  The minimum number of epochs completed during training.
+* <hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px">
+* <span style="color:#DD4814">l2_strength: float, default=0</span>
+   *  The l2 regularization of the linear predictive layer's parameters. Larger values specify stronger regularization.
+* <hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px">
+* <span style="color:#DD4814">w_l2: float, default=0</span>
+   *  The l2 regularization of the multiplicative bias correction parameters (applied to the logarithm of the multiplicative parameters). Larger values specify stronger regularization.
+* <hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px">
+* <span style="color:#DD4814">random_state: int, default=None</span>
+   *  Used to specify the seed during training, if specified.
+* <hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px">
+* <span style="color:#DD4814">x_val: {array-like, sparse matrix} of shape (n_samples, 1 + n_taxa), default=None</span>
+   *  An `n_samples` x `1 + n_taxa` matrix describing the read counts of held-out validation and/or test sets, for which any validation or testing labels will not be available during training. The first column of <span style="color:#DD4814">x_val</span> denotes the batch of each sample, as non-negative integers which are interpreted alongside batches specified in the <span style="color:#DD4814">train</span> inputs. Providing <span style="color:#DD4814">x_val</span> allows DEBIAS-M to account for distribution shifts from these samples during training.
+</div>
+
+<br><br>
+
+Example
+-----------
+```python
+## import packages
+import numpy as np
+from skelarn.metrics import roc_auc_score
+from debiasm import DebiasMClassifier
+
+## generate data for the example
+np.random.seed(123)
+n_samples = 96*5
+n_batches = 5
+n_features = 100
+n_tasks=3
+
+## the read count matrix
+X = ( np.random.rand(n_samples, n_features) * 1000 ).astype(int)
+
+## the labels
+y = np.random.rand(n_samples, n_tasks)>0.5
+
+## the batches
+batches = ( np.random.rand(n_samples) * n_batches ).astype(int)
+
+## we assume the batches are numbered ints starting at '0',
+## and they are in the first column of the input X matrices
+X_with_batch = np.hstack((batches[:, np.newaxis], X))
+## set the valdiation batch to '4'
+val_inds = batches==4
+X_train, X_val = X_with_batch[~val_inds], X_with_batch[val_inds]
+y_train, y_val = y[~val_inds], y[val_inds]
+
+### Run multitask DEBIAS-M, using standard sklearn object methods
+multitask_model = MultitaskDebiasMClassifier(x_val=X_val)
+multitask_model.fit(X_train, y_train)
+
+## Assess resulting scores
+predicted_scores = multitask_model.predict_proba(X_val)
+
+## extract the 'DEBIAS-ed' data for other downstream analyses, if applicable 
+X_debiassed = multitask_model.transform(X_with_batch)
+```
+
+<br>
+
+Methods
+-----------
+<div class="codecell">
+* <span style="color:#DD4814">fit</span>(X, y)
+* <hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px">
+   *  Fit the model according to the given training data.
+    * <hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px">
+      * <span style="color:#DD4814"><u>Parameters</u>:</span>
+        * <span style="color:#DD4814">X : {array-like, sparse matrix} of shape (n_samples, 1 + n_taxa)</span>
+            * Training samples, where `n_samples` is the number of samples and `n_taxa` is the number of taxa. The first column of X denotes the batch of each sample, as non-negative integers, while the remaining `n_taxa` describe the read counts of each taxon. DEBIAS-M also supports relative abundance inputs.
+        * <span style="color:#DD4814">y : array-like of shape (n_samples, n_tasks)</span>
+            * Target vectors relative to X, where `n_tasks` represents the number of training tasks.
+      * <hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px">
+      * <span style="color:#DD4814"><u>Returns</u>:</span>
+        * <span style="color:#DD4814">self</span>
+            * Fitted DEBIAS-M preprocessor and estimator
+</div>
+
+<div class="codecell">
+* <span style="color:#DD4814">transform</span>(X)
+* <hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px">
+   *  Apply DEBIAS-M processing to X.
+   * <hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px">
+      * <span style="color:#DD4814"><u>Parameters</u>:</span>
+        * <span style="color:#DD4814">X : {array-like, sparse matrix} of shape (n_samples, 1 + n_taxa)</span>
+            * Samples to be transformed; `n_samples` is the number of samples and `n_taxa` is the number of taxa. The first column of X denotes the batch of each sample, as non-negative integers, while the remaining `n_taxa` describe the read counts of each taxon. DEBIAS-M also supports relative abundance inputs.
+      * <hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px">
+      * <span style="color:#DD4814"><u>Returns</u>:</span>
+        * <span style="color:#DD4814">X_debias</span> :  matrix of shape (n_samples, n_taxa)
+            * The relative abundance matrix of X following bias-correction
+</div>
+
+<div class="codecell">
+* <span style="color:#DD4814">predict_proba</span>(X)
+* <hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px">
+   *  Calculate DEBIAS-M classification probability estimates; the returned estimates for all classes are ordered by the label of classes.
+   * <hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px">
+      * <span style="color:#DD4814"><u>Parameters</u>:</span>
+        * <span style="color:#DD4814">X : {array-like, sparse matrix} of shape (n_samples, 1 + n_taxa)</span>
+            * Samples to obtain predictions for; `n_samples` is the number of samples and `n_taxa` is the number of taxa. The first column of X denotes the batch of each sample, as non-negative integers, while the remaining `n_taxa` describe the read counts of each taxon. DEBIAS-M also supports relative abundance inputs.
+      * <hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px">
+      * <span style="color:#DD4814"><u>Returns</u>:</span>
+        * <span style="color:#DD4814">P : list of n_tasks ndarrays, each of shape (n_samples, n_classes)</span>
+            * The probabilities of each sample for each task and class considered in the model.
+</div>
+
+
+<style>
+.seealso {
+  background-color: #F6B302;
+  color: black;
+  border: 2px solid black;
+  margin: 20px;
+  padding: 20px;
+} 
+
+l{color: darkgreen}
+</style>
+
+
+<div class="seealso">
+**See also:**<br>
+[__Multitask DEBIAS-M Classifier Demo__](MultitaskDebiasMClassifier-demo.html)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+An example analysis using the DEBIAS-M classifier<br>
+[__AdaptationDebiasMClassifier__](DebiasMRegressor.html)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Implementation of a DEBIAS-M regressor<br>
+<br>
+For more background on DEBIAS-M, refer to the scikit-learn to [our manuscript](https://www.biorxiv.org/content/10.1101/2024.02.09.579716v1). 
+

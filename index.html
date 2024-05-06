@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title> DEBIAS-M: Domain adaptation with phenotype Estimation and Batch Integration Across Studies of the Microbiome</title>
+
+<script src="index_files/header-attrs-2.20/header-attrs.js"></script>
+<script src="index_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="index_files/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="index_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="index_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="index_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="index_files/navigation-1.1/tabsets.js"></script>
+<link href="index_files/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="index_files/highlightjs-9.12.0/highlight.js"></script>
+<script src="index_files/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="index_files/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="index_files/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="index_files/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<link href="index_files/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="index_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">DEBIAS-M</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-bullseye"></span>
+     
+    Classification
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="DebiasMClassifier.html">DebiasMClassifier</a>
+    </li>
+    <li>
+      <a href="DebiasMClassifier-demo.html">Demo</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-arrow-trend-up"></span>
+     
+    Regression
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="DebiasMRegressor.html">DebiasMRegressor</a>
+    </li>
+    <li>
+      <a href="DebiasMRegressor-demo.html">Demo</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-sliders"></span>
+     
+    Multitask
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="MultitaskDebiasMClassifier.html">MultitaskDebiasMClassifier</a>
+    </li>
+    <li>
+      <a href="MultitaskDebiasMClassifier-demo.html">Demo</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-globe"></span>
+     
+    Adaptation
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="AdaptationDebiasMClassifier.html">AdaptationDebiasMClassifier</a>
+    </li>
+    <li>
+      <a href="AdaptationDebiasMClassifier-demo.html">Demo</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-plus-minus"></span>
+     
+    Log-space
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="DebiasMClassifierLogAdd.html">DebiasMClassifierLogAdd</a>
+    </li>
+    <li>
+      <a href="DebiasMClassifierLogAdd-demo.html">Demo</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-binoculars"></span>
+     
+    Related documents
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="https://www.biorxiv.org/content/10.1101/2024.02.09.579716v1">DEBIAS-M Manuscript</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/korem-lab/DEBIAS-M/issues">
+    <span class="fa fa-comment"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/korem-lab/DEBIAS-M/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><br><span
+style="color:#DD4814"><strong>DEBIAS-M</strong></span>: <span
+style="color:#DD4814"><strong>D</strong></span>omain adaptation with
+phenotype <span style="color:#DD4814"><strong>E</strong></span>stimation
+and <span style="color:#DD4814"><strong>B</strong></span>atch <span
+style="color:#DD4814"><strong>I</strong></span>ntegration <span
+style="color:#DD4814"><strong>A</strong></span>cross <span
+style="color:#DD4814"><strong>S</strong></span>tudies of the <span
+style="color:#DD4814"><strong>M</strong></span>icrobiome</h1>
+
+</div>
+
+
+<!-- # “default”, “bootstrap”, “cerulean”, “cosmo”, “darkly”, “flatly”, “journal”, “lumen”, “paper”, “readable”, “sandstone”, “simplex”, “spacelab”, “united”, “yeti” -->
+<!-- united -->
+<style>
+.darkgreen {
+  background-color: #577836;
+  color: white;
+  border: 2px solid black;
+  margin: 20px;
+  padding: 20px;
+} 
+</style>
+<style>
+    body { 
+            background-color: #16153C;
+            text-color: whitesmoke;
+            color: whitesmoke;
+            font-family: Palatino;
+            font-size: 12pt;
+            margin: 10px;
+            padding: 0px;
+            }
+
+</style>
+<img src='images/DEBIAS-M-logo.png' align="right" height="300" />
+<link rel="icon" type="image/png" href="images/DEBIAS-M-logo.png" />
+</center>
+<style>
+.alert {
+  background-color: red;
+  border: 3px solid black;
+  font-weight: bold;
+  color: whitesmoke; 
+}
+</style>
+<style type="text/css">
+.bashform {
+  background-color: #DD4814;
+  border: 3px solid #987CAC;
+  font-weight: bold;
+  color: whitesmoke; 
+}
+
+
+</style>
+<hr />
+<script>
+  addClassKlippyTo("pre.r, pre.python, pre.bash, pre.bashform");
+  addKlippy('right', 'top', '#16153C', '1', 'Copy', 'Copied!');
+</script>
+<div class='body'>
+
+<p>Welcome to <a href="index.html"><strong>DEBIAS-M</strong></a>! This
+is a python package designed to facilitate correcting for processing
+bias during microbiome analyses.</p>
+<p><br> DEBIAS-M contains classes for processing bias correction which
+integrate microbiome datasets originating form multiple studies, for a
+wide variety of computational analyses and applications:</p>
+<ul>
+<li><a
+href="DebiasMClassifier.html"><strong>DebiasMClassifier</strong></a> for
+classification<br />
+</li>
+<li><a
+href="DebiasMRegressor.html"><strong>DebiasMRegressor</strong></a> for
+regression</li>
+<li><a
+href="MultitaskDebiasMClassifier.html"><strong>MultitaskDebiasMClassifier</strong></a>
+for multitask analyses</li>
+<li><a
+href="AdaptationDebiasMClassifier.html"><strong>AdaptationDebiasMClassifier</strong></a>
+for online adaptation</li>
+<li><a
+href="DebiasMClassifierLogAdd.html"><strong>DebiasMClassifierLogAdd</strong></a>
+for bias correction in logarithmic space</li>
+</ul>
+<p><br></p>
+<div class="alert">
+<p>These <code>github.io</code> documentation pages are currently under
+development. While these will be completed soon, for the time being we
+recommend following the github <code>README.md</code>.</p>
+</div>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<pre class="bashform"><code>pip install git+https://github.com/korem-lab/DEBIAS-M.git</code></pre>
+<p>The only dependencies for installation are
+<code>python&lt;3.11</code>, <code>scikit-learn</code>,
+<code>torch&lt;=1.13.1</code>, <code>pytorch-lightning&lt;=1.6</code>
+<br><br></p>
+</div>
+<div id="loading" class="section level2">
+<h2>Loading</h2>
+<pre class="python"><code>from debiasm import DebiasMClassifier, DebiasMRegressor, MultitaskDebiasMClassifier, AdaptationDebiasMClassifier, DebiasMClassifierLogAdd</code></pre>
+<p><br></p>
+</div>
+<div id="background" class="section level2">
+<h2>Background</h2>
+<p>It has been shown that standard microbiome collection and processing
+protocols harbor distinct biases that multiplicatively over- and
+understate the relative abundance of various microbes. As a result, it
+has become commonplace to observe significant differences in similar
+microbiome samples’ compositions originating form different studies,
+broadly described as “batch effects”. DEBIAS-M resolves this issue by
+combining the known mechanism behind processing biases with shared
+information contained across multiple microbiome datasets and any
+provided phenotype information, and has been shown to outperform common
+batch correction methods using explainable and pseudo-mechanistic
+parameters. For more details, please refer to <a
+href="https://www.biorxiv.org/content/10.1101/2024.02.09.579716v1">our
+manuscript</a>. <br><br> The inputs, outputs, and syntax within the
+DEBIAS-M package are built using a scikit-learn base, and are designed
+to have similar functionality to standard scikit-learn classes, such as
+<code>dmc.fit(X, Y)</code>, <code>dmc.transform(X)</code>, and
+<code>dmc.predict_proba(X)</code>. For example:</p>
+<pre class="python"><code>## import packages
+import numpy as np
+from skelarn.metrics import roc_auc_score
+from debiasm import DebiasMClassifier
+
+## generate data for the example
+np.random.seed(123)
+n_samples = 96*5
+n_batches = 5
+n_features = 100
+
+## the read count matrix
+X = ( np.random.rand(n_samples, n_features) * 1000 ).astype(int)
+
+## the labels
+y = np.random.rand(n_samples)&gt;0.5
+
+## the batches
+batches = ( np.random.rand(n_samples) * n_batches ).astype(int)
+
+## we assume the batches are numbered ints starting at &#39;0&#39;,
+## and they are in the first column of the input X matrices
+X_with_batch = np.hstack((batches[:, np.newaxis], X))
+## set the valdiation batch to &#39;4&#39;
+val_inds = batches==4
+X_train, X_val = X_with_batch[~val_inds], X_with_batch[val_inds]
+y_train, y_val = y[~val_inds], y[val_inds]
+
+### Run DEBIAS-M, using standard sklearn object methods
+dmc = DebiasMClassifier(x_val=X_val) ## give it the held-out inputs to account for
+                                    ## those domains shifts while training
+dmc.fit(X_train, y_train)
+
+## Assess results
+### should be ~~0.5 in this example , since the data is all random
+roc_auc_score(y_val, dmc.predict_proba(X_val)[:, 1]) 
+
+## extract the &#39;DEBIAS-ed&#39; data for other downstream analyses, if applicable 
+X_debiassed = dmc.transform(X_with_batch)</code></pre>
+<p>For more details, we provide further background and walkthrough
+demonstrations for each of DEBIAS-M’s classes in their respective
+documentation tabs.</p>
+<p><br></p>
+<p>Please report any issues faced while using DEBIAS-M in our <a
+href="https://github.com/korem-lab/DEBIAS-M/issues">Issues Page</a>, or
+email <a href="gia2105@columbia.edu">gia2105@columbia.edu</a>.</p>
+<p><br></p>
+</div>
+<div id="citation" class="section level2">
+<h2>Citation</h2>
+<style>
+.citation {
+  background-color: #A1DDF2;
+  color: black;
+  border: 3px solid #987CAC;
+  margin: 20px;
+  padding: 20px;
+} 
+</style>
+<div class="citation">
+<p>Austin, G.I. et al. “Processing-bias correction with DEBIAS-M
+improves cross-study generalization of microbiome-based prediction
+models” (2024). <strong><a
+href="https://doi.org/10.1101/2024.02.09.579716"
+class="uri">https://doi.org/10.1101/2024.02.09.579716</a></strong></p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

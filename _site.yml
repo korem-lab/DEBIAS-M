@@ -1,0 +1,60 @@
+name: DEBIAS-M
+output_dir: '.'
+icon: fa-scale-unbalanced
+favicon: images/DEBIAS-M-logo.png
+navbar:
+  title: DEBIAS-M
+  left:
+  - text: Classification
+    icon: fa-bullseye
+    menu: 
+    - text: DebiasMClassifier
+      href: DebiasMClassifier.html
+    - text: Demo
+      href: DebiasMClassifier-demo.html
+  - text: Regression
+    icon: fa-arrow-trend-up
+    menu: 
+    - text: DebiasMRegressor
+      href: DebiasMRegressor.html
+    - text: Demo
+      href: DebiasMRegressor-demo.html
+  - text: Multitask
+    icon: fa-sliders
+    menu: 
+    - text: MultitaskDebiasMClassifier
+      href: MultitaskDebiasMClassifier.html
+    - text: Demo
+      href: MultitaskDebiasMClassifier-demo.html
+  - text: Adaptation
+    icon: fa-globe
+    menu: 
+    - text: AdaptationDebiasMClassifier
+      href: AdaptationDebiasMClassifier.html
+    - text: Demo
+      href: AdaptationDebiasMClassifier-demo.html
+  - text: Log-space
+    icon: fa-plus-minus
+    menu: 
+    - text: DebiasMClassifierLogAdd
+      href: DebiasMClassifierLogAdd.html
+    - text: Demo
+      href: DebiasMClassifierLogAdd-demo.html
+  - text: Related documents
+    icon: fa-binoculars
+    menu:
+    - text: DEBIAS-M Manuscript
+      href: https://www.biorxiv.org/content/10.1101/2024.02.09.579716v1
+  right:
+  - icon: fa-comment
+    href: https://github.com/korem-lab/DEBIAS-M/issues
+  - icon: fa-github fa-lg
+    href: https://github.com/korem-lab/DEBIAS-M/
+
+output:
+  html_document:
+    self_contained: no
+    in_header: images/DEBIAS-M-logo.png
+    highlight: textmate
+
+
