@@ -199,7 +199,6 @@ def DEBIASM_train_and_pred(X_train,
                          val_split=0.1, 
                          test_split=0,
                          min_epochs=15, 
-#                          use_log=False, 
                          verbose=False
                          ):
     
@@ -293,7 +292,6 @@ class PL_DEBIASM_regression(pl.LightningModule):
         self.X=X[:, 1:]
         self.bs=X[:, 0].long()
         self.unique_bs=self.bs.unique().long()
-#         self.n_batches=self.unique_bs.max()+1
         self.batch_weights = torch.nn.Parameter(data = torch.zeros(self.n_batches,
                                                                    input_dim))
 

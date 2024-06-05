@@ -269,7 +269,7 @@ def DEBIASM_mutlitask_train_and_pred(X_train,
 
     ## build pl dataloader
     dm = SklearnDataModule(X_train, 
-                           y_train.astype(int),
+                           torch.tensor( y_train ).long().detach().numpy(),#due to windows numpy bug
                            val_split=val_split,
                            test_split=test_split
                            )
@@ -288,7 +288,7 @@ def DEBIASM_mutlitask_train_and_pred(X_train,
     trainer.fit(model, 
                 train_dataloaders=dm.train_dataloader(), 
                 val_dataloaders=dm.val_dataloader()
-               )
+                )
     return(model)
 
 
