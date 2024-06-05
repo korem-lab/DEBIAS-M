@@ -35,6 +35,7 @@ jobs:
           fetch-depth: 0
 
       - uses: conda-incubator/setup-miniconda@v2
+          miniconda-version: "latest"
       
       - name: Install conda reqs
         shell: bash -l {0}
