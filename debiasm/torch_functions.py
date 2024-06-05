@@ -199,7 +199,6 @@ def DEBIASM_train_and_pred(X_train,
                          val_split=0.1, 
                          test_split=0,
                          min_epochs=15, 
-#                          use_log=False, 
                          verbose=False
                          ):
     
@@ -226,18 +225,20 @@ def DEBIASM_train_and_pred(X_train,
 
     ## build pl dataloader
     dm = SklearnDataModule(X_train, 
-                           y_train.astype(int),
+                           torch.tensor( y_train ).long().detach().numpy(),#due to windows numpy bug
                            val_split=val_split,
                            test_split=test_split
                            )
 
     ## run training
-    trainer = pl.Trainer(callbacks=[EarlyStopping(monitor="val_loss", mode="min", patience=2)], 
-                             check_val_every_n_epoch=2, 
-                             weights_summary=None, 
-                             progress_bar_refresh_rate=0,#verbose, 
-                             min_epochs=min_epochs
-                            )
+    trainer = pl.Trainer(logger=False, 
+                         checkpoint_callback=False,
+                         callbacks=[EarlyStopping(monitor="val_loss", mode="min", patience=2)], 
+                         check_val_every_n_epoch=2, 
+                         weights_summary=None, 
+                         progress_bar_refresh_rate=0,#verbose, 
+                         min_epochs=min_epochs
+                         )
     trainer.fit(model, 
                 train_dataloaders=dm.train_dataloader(), 
                 val_dataloaders=dm.val_dataloader()
@@ -291,7 +292,6 @@ class PL_DEBIASM_regression(pl.LightningModule):
         self.X=X[:, 1:]
         self.bs=X[:, 0].long()
         self.unique_bs=self.bs.unique().long()
-#         self.n_batches=self.unique_bs.max()+1
         self.batch_weights = torch.nn.Parameter(data = torch.zeros(self.n_batches,
                                                                    input_dim))
 
@@ -682,12 +682,14 @@ def DEBIASM_train_and_pred_log_additive(X_train,
                            )
 
     ## run training
-    trainer = pl.Trainer(callbacks=[EarlyStopping(monitor="val_loss", mode="min", patience=2)], 
-                             check_val_every_n_epoch=2, 
-                             weights_summary=None, 
-                             progress_bar_refresh_rate=0, 
-                             min_epochs=min_epochs
-                            )
+    trainer = pl.Trainer(logger=False, 
+                         checkpoint_callback=False,
+                         callbacks=[EarlyStopping(monitor="val_loss", mode="min", patience=2)], 
+                         check_val_every_n_epoch=2, 
+                         weights_summary=None, 
+                         progress_bar_refresh_rate=0, 
+                         min_epochs=min_epochs
+                         )
     trainer.fit(model, 
                 train_dataloaders=dm.train_dataloader(), 
                 val_dataloaders=dm.val_dataloader()
