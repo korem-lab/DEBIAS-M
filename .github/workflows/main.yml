@@ -21,7 +21,7 @@ jobs:
         config:
           - {os: macOS-latest, r: 'release'}
           - {os: windows-latest, r: 'release'}
-          - {os: windows-2019, r:'release'}
+          - {os: windows-2019, r: 'release'}
           - {os: ubuntu-latest, r: 'release'}
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -48,5 +48,5 @@ jobs:
 
       - name: Run tests & coverage
         shell: bash -l {0}
-        run: nosetests -v debiasm --cover-package= debiasm
+        run: nosetests -v debiasm --cover-package=debiasm
 
