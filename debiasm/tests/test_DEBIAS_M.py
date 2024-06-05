@@ -40,6 +40,9 @@ class ClassifierTest(unittest.TestCase):
     roc= roc_auc_score(y_val, dmc.predict_proba(X_val)[:, 1])
     ## should be ~~0.5 in this notebook , since the data is all random
     
+    print('successful test!')
+    
     
 if __name__ == '__main__':
+    print('here')
     unittest.main()
