@@ -42,7 +42,7 @@ class DMtest(unittest.TestCase):
         roc= roc_auc_score(y_val, dmc.predict_proba(X_val)[:, 1])
         ## should be ~~0.5 in this notebook , since the data is all random
         
-        self.assertTrue( roc < .65 and roc > .35 )
+        self.assertTrue( roc > .65 and roc < .35 )
     
     
 if __name__ == '__main__':
