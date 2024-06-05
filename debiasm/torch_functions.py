@@ -232,12 +232,14 @@ def DEBIASM_train_and_pred(X_train,
                            )
 
     ## run training
-    trainer = pl.Trainer(callbacks=[EarlyStopping(monitor="val_loss", mode="min", patience=2)], 
-                             check_val_every_n_epoch=2, 
-                             weights_summary=None, 
-                             progress_bar_refresh_rate=0,#verbose, 
-                             min_epochs=min_epochs
-                            )
+    trainer = pl.Trainer(logger=False, 
+                         checkpoint_callback=False,
+                         callbacks=[EarlyStopping(monitor="val_loss", mode="min", patience=2)], 
+                         check_val_every_n_epoch=2, 
+                         weights_summary=None, 
+                         progress_bar_refresh_rate=0,#verbose, 
+                         min_epochs=min_epochs
+                         )
     trainer.fit(model, 
                 train_dataloaders=dm.train_dataloader(), 
                 val_dataloaders=dm.val_dataloader()
@@ -682,12 +684,14 @@ def DEBIASM_train_and_pred_log_additive(X_train,
                            )
 
     ## run training
-    trainer = pl.Trainer(callbacks=[EarlyStopping(monitor="val_loss", mode="min", patience=2)], 
-                             check_val_every_n_epoch=2, 
-                             weights_summary=None, 
-                             progress_bar_refresh_rate=0, 
-                             min_epochs=min_epochs
-                            )
+    trainer = pl.Trainer(logger=False, 
+                         checkpoint_callback=False,
+                         callbacks=[EarlyStopping(monitor="val_loss", mode="min", patience=2)], 
+                         check_val_every_n_epoch=2, 
+                         weights_summary=None, 
+                         progress_bar_refresh_rate=0, 
+                         min_epochs=min_epochs
+                         )
     trainer.fit(model, 
                 train_dataloaders=dm.train_dataloader(), 
                 val_dataloaders=dm.val_dataloader()
