@@ -226,7 +226,7 @@ def DEBIASM_train_and_pred(X_train,
 
     ## build pl dataloader
     dm = SklearnDataModule(X_train, 
-                           y_train.astype(int),
+                           torch.tensor( y_train ).long()
                            val_split=val_split,
                            test_split=test_split
                            )
