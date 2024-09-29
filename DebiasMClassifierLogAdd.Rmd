@@ -79,9 +79,11 @@ klippy::klippy(c('r', 'python', 'bash'),
   &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&emsp;&emsp;&emsp;&ensp;                l2_strength=0,<br>
   &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&emsp;&emsp;&emsp;&ensp;                w_l2=0,<br>
   &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&emsp;&emsp;&emsp;&ensp;                random_state=None,<br>
-  &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&emsp;&emsp;&emsp;&ensp;                x_val=None<br>
-  &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&emsp;&emsp;&emsp;&ensp;                )
+  &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&emsp;&emsp;&emsp;&ensp;                x_val=None,<br>
+  &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&emsp;&emsp;&emsp;&ensp;                prediction_loss=torch.nn.functional.binary_cross_entropy<br>
+  &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp; &emsp;&emsp;&emsp;&emsp;&emsp; &emsp;&emsp;&emsp;&emsp;)
 </div>
+
 
 <br>
 The DEBIAS-M Classifier implementation for logspace inputs. <br> <br>
@@ -116,6 +118,9 @@ Parameters
 * <hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px">
 * <span style="color:#DD4814">x_val: {array-like, sparse matrix} of shape (n_samples, 1 + n_taxa), default=None</span>
    *  An `n_samples` x `1 + n_taxa` matrix describing the log-processed read counts of held-out validation and/or test sets, for which any validation or testing labels will not be available during training. The first column of <span style="color:#DD4814">x_val</span> denotes the batch of each sample, as non-negative integers which are interpreted alongside batches specified in the <span style="color:#DD4814">train</span> inputs. Providing <span style="color:#DD4814">x_val</span> allows DEBIAS-M to account for distribution shifts from these samples during training.
+* <hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px">
+* <span style="color:#DD4814">prediction_loss: loss function, default=torch.nn.functional.binary_cross_entropy</span>
+   *  Used to specify the prediction loss function to be used during training.
 </div>
 
 <br><br>

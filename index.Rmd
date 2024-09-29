@@ -70,11 +70,12 @@ Welcome to [__DEBIAS-M__](index.html)! This is a python package designed to faci
 <br>
 DEBIAS-M contains classes for processing bias correction which integrate microbiome datasets originating form multiple studies, for a wide variety of computational analyses and applications:
 
- * [__DebiasMClassifier__](DebiasMClassifier.html) for classification  
- * [__DebiasMRegressor__](DebiasMRegressor.html) for regression
- * [__MultitaskDebiasMClassifier__](MultitaskDebiasMClassifier.html) for multitask analyses
- * [__AdaptationDebiasMClassifier__](AdaptationDebiasMClassifier.html) for online adaptation
- * [__DebiasMClassifierLogAdd__](DebiasMClassifierLogAdd.html) for bias correction in logarithmic space
+ * [__DebiasMClassifier__](DebiasMClassifier.html) - classification  
+ * [__DebiasMRegressor__](DebiasMRegressor.html) - regression
+ * [__MultitaskDebiasMClassifier__](MultitaskDebiasMClassifier.html) - multitask classification
+ * [__MultitaskDebiasMClassifier__](MultitaskDebiasMClassifier.html) - multitask regression
+ * [__OnlineDebiasMClassifier__](OnlineDebiasMClassifier.html) - online adaptation
+ * [__DebiasMClassifierLogAdd__](DebiasMClassifierLogAdd.html) - bias correction in logarithmic space
 
 <br>
 
@@ -94,7 +95,7 @@ The only dependencies for installation are `python<3.11`,  `scikit-learn`, `torc
 ## Loading
 
 ```python
-from debiasm import DebiasMClassifier, DebiasMRegressor, MultitaskDebiasMClassifier, AdaptationDebiasMClassifier, DebiasMClassifierLogAdd
+from debiasm import DebiasMClassifier, DebiasMRegressor, MultitaskDebiasMClassifier, MultitaskDebiasMRegressor, OnlineDebiasMClassifier, DebiasMClassifierLogAdd
 ```
 
 <br>

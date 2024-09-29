@@ -261,13 +261,13 @@ $(document).ready(function () {
       <a href="DebiasMClassifier.html">DebiasMClassifier</a>
     </li>
     <li>
-      <a href="DebiasMClassifier-demo.html">Demo</a>
+      <a href="MultitaskDebiasMClassifier.html">MultitaskDebiasMClassifier</a>
     </li>
   </ul>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    <span class="fa fa-arrow-trend-up"></span>
+    <span class="fa fa-sliders"></span>
      
     Regression
      
@@ -278,24 +278,7 @@ $(document).ready(function () {
       <a href="DebiasMRegressor.html">DebiasMRegressor</a>
     </li>
     <li>
-      <a href="DebiasMRegressor-demo.html">Demo</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    <span class="fa fa-sliders"></span>
-     
-    Multitask
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="MultitaskDebiasMClassifier.html">MultitaskDebiasMClassifier</a>
-    </li>
-    <li>
-      <a href="MultitaskDebiasMClassifier-demo.html">Demo</a>
+      <a href="MultitaskDebiasMRegressor.html">MultitaskDebiasMRegressor</a>
     </li>
   </ul>
 </li>
@@ -303,16 +286,13 @@ $(document).ready(function () {
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     <span class="fa fa-globe"></span>
      
-    Adaptation
+    Online learning
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="AdaptationDebiasMClassifier.html">AdaptationDebiasMClassifier</a>
-    </li>
-    <li>
-      <a href="AdaptationDebiasMClassifier-demo.html">Demo</a>
+      <a href="OnlineDebiasMClassifier.html">OnlineDebiasMClassifier</a>
     </li>
   </ul>
 </li>
@@ -327,9 +307,6 @@ $(document).ready(function () {
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="DebiasMClassifierLogAdd.html">DebiasMClassifierLogAdd</a>
-    </li>
-    <li>
-      <a href="DebiasMClassifierLogAdd-demo.html">Demo</a>
     </li>
   </ul>
 </li>
@@ -442,21 +419,24 @@ integrate microbiome datasets originating form multiple studies, for a
 wide variety of computational analyses and applications:</p>
 <ul>
 <li><a
-href="DebiasMClassifier.html"><strong>DebiasMClassifier</strong></a> for
+href="DebiasMClassifier.html"><strong>DebiasMClassifier</strong></a> -
 classification<br />
 </li>
 <li><a
-href="DebiasMRegressor.html"><strong>DebiasMRegressor</strong></a> for
+href="DebiasMRegressor.html"><strong>DebiasMRegressor</strong></a> -
 regression</li>
 <li><a
 href="MultitaskDebiasMClassifier.html"><strong>MultitaskDebiasMClassifier</strong></a>
-for multitask analyses</li>
+- multitask classification</li>
 <li><a
-href="AdaptationDebiasMClassifier.html"><strong>AdaptationDebiasMClassifier</strong></a>
-for online adaptation</li>
+href="MultitaskDebiasMClassifier.html"><strong>MultitaskDebiasMClassifier</strong></a>
+- multitask regression</li>
+<li><a
+href="OnlineDebiasMClassifier.html"><strong>OnlineDebiasMClassifier</strong></a>
+- online adaptation</li>
 <li><a
 href="DebiasMClassifierLogAdd.html"><strong>DebiasMClassifierLogAdd</strong></a>
-for bias correction in logarithmic space</li>
+- bias correction in logarithmic space</li>
 </ul>
 <p><br></p>
 <div class="alert">
@@ -474,7 +454,7 @@ recommend following the github <code>README.md</code>.</p>
 </div>
 <div id="loading" class="section level2">
 <h2>Loading</h2>
-<pre class="python"><code>from debiasm import DebiasMClassifier, DebiasMRegressor, MultitaskDebiasMClassifier, AdaptationDebiasMClassifier, DebiasMClassifierLogAdd</code></pre>
+<pre class="python"><code>from debiasm import DebiasMClassifier, DebiasMRegressor, MultitaskDebiasMClassifier, MultitaskDebiasMRegressor, OnlineDebiasMClassifier, DebiasMClassifierLogAdd</code></pre>
 <p><br></p>
 </div>
 <div id="background" class="section level2">

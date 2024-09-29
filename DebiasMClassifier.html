@@ -261,13 +261,13 @@ $(document).ready(function () {
       <a href="DebiasMClassifier.html">DebiasMClassifier</a>
     </li>
     <li>
-      <a href="DebiasMClassifier-demo.html">Demo</a>
+      <a href="MultitaskDebiasMClassifier.html">MultitaskDebiasMClassifier</a>
     </li>
   </ul>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    <span class="fa fa-arrow-trend-up"></span>
+    <span class="fa fa-sliders"></span>
      
     Regression
      
@@ -278,24 +278,7 @@ $(document).ready(function () {
       <a href="DebiasMRegressor.html">DebiasMRegressor</a>
     </li>
     <li>
-      <a href="DebiasMRegressor-demo.html">Demo</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    <span class="fa fa-sliders"></span>
-     
-    Multitask
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="MultitaskDebiasMClassifier.html">MultitaskDebiasMClassifier</a>
-    </li>
-    <li>
-      <a href="MultitaskDebiasMClassifier-demo.html">Demo</a>
+      <a href="MultitaskDebiasMRegressor.html">MultitaskDebiasMRegressor</a>
     </li>
   </ul>
 </li>
@@ -303,16 +286,13 @@ $(document).ready(function () {
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     <span class="fa fa-globe"></span>
      
-    Adaptation
+    Online learning
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="AdaptationDebiasMClassifier.html">AdaptationDebiasMClassifier</a>
-    </li>
-    <li>
-      <a href="AdaptationDebiasMClassifier-demo.html">Demo</a>
+      <a href="OnlineDebiasMClassifier.html">OnlineDebiasMClassifier</a>
     </li>
   </ul>
 </li>
@@ -327,9 +307,6 @@ $(document).ready(function () {
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="DebiasMClassifierLogAdd.html">DebiasMClassifierLogAdd</a>
-    </li>
-    <li>
-      <a href="DebiasMClassifierLogAdd-demo.html">Demo</a>
     </li>
   </ul>
 </li>
@@ -442,7 +419,9 @@ style="color:#DD4814"><strong>DebiasMClassifier</strong></span>(batch_str
 = ‘infer’,<br>                    learning_rate=0.005, <br>            
        min_epochs=25,<br>                    l2_strength=0,<br>        
            w_l2=0,<br>                    random_state=None,<br>        
-           x_val=None<br>                    )</p>
+           x_val=None,<br>                   
+prediction_loss=torch.nn.functional.binary_cross_entropy<br>            
+       )</p>
 </div>
 <p><br> The DEBIAS-M Classifier. <br> <br> This class implements
 multiplicative DEBIAS-M bias-correction using aggregated microbiome
@@ -510,6 +489,13 @@ interpreted alongside batches specified in the <span
 style="color:#DD4814">train</span> inputs. Providing <span
 style="color:#DD4814">x_val</span> allows DEBIAS-M to account for
 distribution shifts from these samples during training.</li>
+</ul></li>
+<li><hr style="height: 2.5px; border: 1px solid #987CAC; background-color: #987CAC; margin: 2px"></li>
+<li><span style="color:#DD4814">prediction_loss: loss function,
+default=torch.nn.functional.binary_cross_entropy</span>
+<ul>
+<li>Used to specify the prediction loss function to be used during
+training.</li>
 </ul></li>
 </ul>
 </div>

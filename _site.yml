@@ -10,36 +10,25 @@ navbar:
     menu: 
     - text: DebiasMClassifier
       href: DebiasMClassifier.html
-    - text: Demo
-      href: DebiasMClassifier-demo.html
+    - text: MultitaskDebiasMClassifier
+      href: MultitaskDebiasMClassifier.html
   - text: Regression
-    icon: fa-arrow-trend-up
+    icon: fa-sliders
     menu: 
     - text: DebiasMRegressor
       href: DebiasMRegressor.html
-    - text: Demo
-      href: DebiasMRegressor-demo.html
-  - text: Multitask
-    icon: fa-sliders
-    menu: 
-    - text: MultitaskDebiasMClassifier
-      href: MultitaskDebiasMClassifier.html
-    - text: Demo
-      href: MultitaskDebiasMClassifier-demo.html
-  - text: Adaptation
+    - text: MultitaskDebiasMRegressor
+      href: MultitaskDebiasMRegressor.html
+  - text: Online learning
     icon: fa-globe
     menu: 
-    - text: AdaptationDebiasMClassifier
-      href: AdaptationDebiasMClassifier.html
-    - text: Demo
-      href: AdaptationDebiasMClassifier-demo.html
+    - text: OnlineDebiasMClassifier
+      href: OnlineDebiasMClassifier.html
   - text: Log-space
     icon: fa-plus-minus
     menu: 
     - text: DebiasMClassifierLogAdd
       href: DebiasMClassifierLogAdd.html
-    - text: Demo
-      href: DebiasMClassifierLogAdd-demo.html
   - text: Related documents
     icon: fa-binoculars
     menu:
