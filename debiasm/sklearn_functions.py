@@ -5,6 +5,7 @@ import torch.nn.functional as F
 from torch.nn.functional import pairwise_distance
 from sklearn.base import BaseEstimator
 from .torch_functions import DEBIASM_train_and_pred, DEBIASM_train_and_pred_log_additive
+from torch.nn.functional import cross_entropy
 
 def batch_weight_feature_and_nbatchpairs_scaling(strength, df_with_batch):
     nbs = df_with_batch.iloc[:, 0].nunique()
@@ -21,7 +22,8 @@ class DebiasMClassifier(BaseEstimator):
                  l2_strength=0,
                  w_l2=0,
                  random_state=None,
-                 x_val=0
+                 x_val=0,
+                 prediction_loss=cross_entropy
                  ):
         
         self.learning_rate=learning_rate
@@ -31,6 +33,7 @@ class DebiasMClassifier(BaseEstimator):
         self.batch_str=batch_str
         self.x_val = x_val
         self.random_state=random_state
+        self.prediction_loss=prediction_loss
         
     def fit(self, X, y, sample_weight=None):
         """Fit the baseline classifier.
@@ -41,7 +44,7 @@ class DebiasMClassifier(BaseEstimator):
             Returns the instance itself.
         """
         if self.batch_str=='infer':
-            self.batch_str = batch_weight_feature_and_nbatchpairs_scaling(1e4, pd.DataFrame(X) )
+            self.batch_str = batch_weight_feature_and_nbatchpairs_scaling(1e4, pd.DataFrame(np.vstack((X, self.x_val)) ) )
             
         self.classes_ = np.unique(y)
         preds, mod = DEBIASM_train_and_pred(
@@ -53,7 +56,8 @@ class DebiasMClassifier(BaseEstimator):
                                             learning_rate=self.learning_rate,
                                             min_epochs= self.min_epochs,
                                             l2_strength=self.l2_strength,
-                                            w_l2 = self.w_l2
+                                            w_l2 = self.w_l2,
+                                            prediction_loss=self.prediction_loss
                                             )
         self.model = mod
         self.val_preds = preds
@@ -118,7 +122,7 @@ class DebiasMClassifier(BaseEstimator):
         
         return P
 
-class AdaptationDebiasMClassifier(BaseEstimator):
+class OnlineDebiasMClassifier(BaseEstimator):
     """DebiasMClassifier: an sklean-style wrapper for the DEBIAS-M torch implementation."""
     def __init__(self,
                  *, 
@@ -127,7 +131,8 @@ class AdaptationDebiasMClassifier(BaseEstimator):
                  min_epochs=25,
                  l2_strength=0,
                  w_l2=0,
-                 random_state=None
+                 random_state=None,
+                 prediction_loss=cross_entropy
                  ):
         
         self.learning_rate=learning_rate
@@ -136,6 +141,7 @@ class AdaptationDebiasMClassifier(BaseEstimator):
         self.w_l2=w_l2
         self.batch_str=batch_str
         self.random_state=random_state
+        self.prediction_loss=prediction_loss
         
     def fit(self, X, y, sample_weight=None):
         """Fit the baseline classifier.
@@ -158,7 +164,8 @@ class AdaptationDebiasMClassifier(BaseEstimator):
                                             learning_rate=self.learning_rate,
                                             min_epochs= self.min_epochs,
                                             l2_strength=self.l2_strength,
-                                            w_l2 = self.w_l2
+                                            w_l2 = self.w_l2,
+                                            prediction_loss=self.prediction_loss
                                             )
         self.model = mod
         self.train_X = pd.DataFrame(X)
@@ -201,10 +208,10 @@ class AdaptationDebiasMClassifier(BaseEstimator):
                                       )
 
         optimizer=torch.optim.Adam([test_bcfs], 
-                                   lr = 0.005
+                                   lr = self.learning_rate
                                    )
         
-        x_test_tensor = torch.tensor(x_test)
+        x_test_tensor = torch.tensor(x_test).float()
         
         for i in range(iters):                
             xt1 = F.normalize( x_test_tensor*torch.pow(2, test_bcfs), p=1)
@@ -266,7 +273,8 @@ class DebiasMClassifierLogAdd(BaseEstimator):
                  l2_strength=0,
                  w_l2=0,
                  random_state=None,
-                 x_val=0
+                 x_val=0,
+                 prediction_loss=cross_entropy
                  ):
         
         self.learning_rate=learning_rate
@@ -276,6 +284,7 @@ class DebiasMClassifierLogAdd(BaseEstimator):
         self.batch_str=batch_str
         self.x_val = x_val
         self.random_state=random_state
+        self.prediction_loss=prediction_loss
         
     def fit(self, X, y, sample_weight=None):
         """Fit the baseline classifier.
@@ -287,7 +296,7 @@ class DebiasMClassifierLogAdd(BaseEstimator):
         """
         self.classes_ = np.unique(y)
         if self.batch_str=='infer':
-            self.batch_str = batch_weight_feature_and_nbatchpairs_scaling(1e3, pd.DataFrame(X) )
+            self.batch_str = batch_weight_feature_and_nbatchpairs_scaling(1e3, pd.DataFrame(np.vstack((X, self.x_val)) ) )
         preds, mod = DEBIASM_train_and_pred_log_additive(
                                                 X, 
                                                 self.x_val, 
@@ -297,7 +306,8 @@ class DebiasMClassifierLogAdd(BaseEstimator):
                                                 learning_rate=self.learning_rate,
                                                 min_epochs= self.min_epochs,
                                                 l2_strength=self.l2_strength,
-                                                w_l2 = self.w_l2
+                                                w_l2 = self.w_l2,
+                                                prediction_loss=self.prediction_loss
                                                 )
         self.model = mod
         self.val_preds = preds

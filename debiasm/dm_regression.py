@@ -1,19 +1,8 @@
 
+
 import numpy as np
 import pandas as pd
-import sys
-from sklearn.linear_model import LogisticRegression
-import torch
-def flatten(l):
-    return [item for sublist in l for item in sublist]
-
-def batch_weight_feature_and_nbatchpairs_scaling(strength, df_with_batch):
-    nbs = df_with_batch.iloc[:, 0].nunique()
-    w = nbs * (nbs - 1) / 2
-    return(strength /( w * ( df_with_batch.shape[1] - 1 ) ) )
-
-from argparse import ArgumentParser
-from typing import Any, Dict, List, Tuple, Type
+from sklearn.linear_model import LogisticRegression, LinearRegression
 
 import pytorch_lightning as pl
 import torch
@@ -24,25 +13,40 @@ from torch.nn.functional import softmax, pairwise_distance
 from torch.optim import Adam
 from torch.optim.optimizer import Optimizer
 from torchmetrics.functional import accuracy
+
 from pl_bolts.datamodules import SklearnDataModule
-from sklearn.base import BaseEstimator
+
+from argparse import ArgumentParser
+from typing import Any, Dict, List, Tuple, Type
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
+
+
+    
+import numpy as np
+import pandas as pd
+import torch
+import torch.nn.functional as F
+from torch.nn.functional import pairwise_distance
+from sklearn.base import BaseEstimator
 
 def rescale(xx):
     return(xx/xx.sum(axis=1)[:, np.newaxis] )
 
-def to_categorical(y, num_classes=2):
-    """ 1-hot encodes a tensor """
-    return np.eye(num_classes, dtype='uint8')[y]
+
+def batch_weight_feature_and_nbatchpairs_scaling(strength, df_with_batch):
+    nbs = df_with_batch.iloc[:, 0].nunique()
+    w = nbs * (nbs - 1) / 2
+    return(strength /( w * ( df_with_batch.shape[1] - 1 ) ) )
 
 
-class PL_DEBIAS_multitask(pl.LightningModule):
-    """Mutitask DEBIAS-M model"""
+class PL_SBCMP_regression(pl.LightningModule):
+    """Logistic regression model."""
 
     def __init__(
         self,
         X, 
         batch_sim_strength: float,
+        weighting_l2_strength: float,
         input_dim: int,
         num_classes: int,
         bias: bool = True,
@@ -50,9 +54,8 @@ class PL_DEBIAS_multitask(pl.LightningModule):
         optimizer: Type[Optimizer] = Adam,
         l1_strength: float = 0.0,
         l2_strength: float = 0.0,
-        w_l2 : float = 0.0,
-        n_tasks = 2,
-        prediction_loss=F.cross_entropy,
+        y_loss_scaling=1,
+        prediction_loss=F.mse_loss,
         **kwargs: Any,
     ) -> None:
         """
@@ -69,15 +72,10 @@ class PL_DEBIAS_multitask(pl.LightningModule):
         self.save_hyperparameters()
         self.optimizer = optimizer
         
-        if n_tasks <=1:
-            raise(ValueError('only "{}" tasks specified, use base function if only a single task is needed'.format(n_tasks)))
+        self.linear = nn.Linear(in_features=self.hparams.input_dim, 
+                                out_features=self.hparams.num_classes, 
+                                bias=bias)
         
-        self.linear_weights = torch.nn.ModuleList([ 
-                        nn.Linear(in_features=self.hparams.input_dim, 
-                                  out_features=self.hparams.num_classes, 
-                                  bias=bias) 
-                                  for task in range(n_tasks) ])
-
         self.X=X[:, 1:]
         self.bs=X[:, 0].long()
         self.unique_bs=self.bs.unique().long()
@@ -86,18 +84,15 @@ class PL_DEBIAS_multitask(pl.LightningModule):
                                                                    input_dim))
 
         self.batch_sim_str=batch_sim_strength
+        self.y_loss_scaling=y_loss_scaling
         self.prediction_loss=prediction_loss
         
         
     def forward(self, x: Tensor) -> Tensor:
         batch_inds, x = x[:, 0], x[:, 1:]
-        x = F.normalize( torch.pow(2, self.batch_weights[batch_inds.long()] ) * x, 
-                        p=1 )
-        
-        # a separate linear / softmax layer for each task
-        y_hats = [softmax(self.linear_weights[i](x))[:, -1] ## this implementation assumes all tasks are binary
-                  for i in range(self.hparams.n_tasks)]
-        return y_hats
+        x = F.normalize( torch.pow(2, self.batch_weights[batch_inds.long()] ) * x, p=1 )
+        y_hat = self.linear(x)
+        return y_hat
 
     
     def training_step(self, batch: Tuple[Tensor, Tensor], batch_idx: int) -> Dict[str, Tensor]:
@@ -106,28 +101,27 @@ class PL_DEBIAS_multitask(pl.LightningModule):
         # flatten any input
         x = x.view(x.size(0), -1)
 
-        y_hats = self.forward(x)
+        y_hat = self.forward(x)
         
-        # PyTorch cross_entropy function combines log_softmax and nll_loss in single function
-        loss = sum( [ self.prediction_loss(y_hats[i][y[:, i]!=-1], 
-                                           y[:, i][y[:, i]!=-1], 
-                                           reduction="sum"
-                                           )
-                      for i in range(self.hparams.n_tasks) 
-                    ] )
+        
+        # PyTorch mse loss
+        loss = self.prediction_loss(y_hat.squeeze(-1), y,) * self.y_loss_scaling
+        
+#         print('MSE loss: {:.3e}'.format(
+#             ( F.mse_loss(y_hat.squeeze(-1), y, reduction="sum") * self.y_loss_scaling ).item())
+#              )  
         
         # L1 regularizer
         if self.hparams.l1_strength > 0:
-            l1_reg = sum([ linear.weight.abs().sum()
-                            for linear in self.linear_weights ])
+            l1_reg = self.linear.weight.abs().sum()
             loss += self.hparams.l1_strength * l1_reg
-        
+
         # L2 regularizer
         if self.hparams.l2_strength > 0:
-            l2_reg = sum([ linear.weight.pow(2).sum() \
-                              for linear in self.linear_weights ])
+            l2_reg = self.linear.weight.pow(2).sum()
             loss += self.hparams.l2_strength * l2_reg
             
+        
         # DOMAIN similarity regularizer / bias correction
         if self.batch_sim_str > 0:
             x1 = torch.stack( [ ( torch.pow(2, self.batch_weights\
@@ -139,16 +133,20 @@ class PL_DEBIAS_multitask(pl.LightningModule):
 
             loss += sum( [pairwise_distance(x1, a) for a in x1] ).sum() *\
                                     self.batch_sim_str
-
-
             
-        # L2 regularizer for bias weight    
-        if self.hparams.w_l2 > 0:
+#             print('Domain sim: {:.3e}'.format( 
+#                     ( sum( [pairwise_distance(x1, a) for a in x1] ).sum() *\
+#                                     self.batch_sim_str ).item()
+#                                 ) )
+
+        if self.hparams.weighting_l2_strength > 0:
             # L2 regularizer for weighting parameter
             l2_reg = self.batch_weights.pow(2).sum()
-            loss += self.hparams.w_l2 * l2_reg
-            
-        
+                  
+#             print('WL2 reg: {:.3e}'.format(
+#                 ( self.hparams.weighting_l2_strength * l2_reg ).item() ) )
+            loss += self.hparams.weighting_l2_strength * l2_reg
+
 
         loss /= float( x.size(0) )
         return {"loss": loss}
@@ -156,26 +154,18 @@ class PL_DEBIAS_multitask(pl.LightningModule):
     def validation_step(self, batch: Tuple[Tensor, Tensor], batch_idx: int) -> Dict[str, Tensor]:
         x, y = batch
         x = x.view(x.size(0), -1)
-        y_hats = self.forward(x)
-                               
+        y_hat = self.forward(x)
          # PyTorch cross_entropy function combines log_softmax and nll_loss in single function
-        loss = sum( [ self.prediction_loss(y_hats[i][y[:, i]!=-1], 
-                                      y[:, i][y[:, i]!=-1], 
-                                      reduction="sum"
-                                     )
-                      for i in range(self.hparams.n_tasks) 
-                    ] )
-        
+        loss = self.prediction_loss(y_hat.squeeze(-1), y, reduction="sum") * self.y_loss_scaling
+                
         # L1 regularizer
         if self.hparams.l1_strength > 0:
-            l1_reg = sum([ linear.weight.abs().sum()
-                            for linear in self.linear_weights ])
+            l1_reg = self.linear.weight.abs().sum()
             loss += self.hparams.l1_strength * l1_reg
-        
+
         # L2 regularizer
         if self.hparams.l2_strength > 0:
-            l2_reg = sum([ linear.weight.pow(2).sum() \
-                              for linear in self.linear_weights ])
+            l2_reg = self.linear.weight.pow(2).sum()
             loss += self.hparams.l2_strength * l2_reg
         
         self.log('val_loss', loss)
@@ -191,8 +181,8 @@ class PL_DEBIAS_multitask(pl.LightningModule):
         x, y = batch
         x = x.view(x.size(0), -1)
         y_hat = self.forward(x)
-        acc = 0#
-        return {"test_loss": F.cross_entropy(y_hat, y),
+        acc = 0
+        return {"test_loss": self.prediction_loss(y_hat, y),
                 "acc": acc}
 
     def test_epoch_end(self, outputs: List[Dict[str, Tensor]]) -> Dict[str, Tensor]:
@@ -219,95 +209,85 @@ class PL_DEBIAS_multitask(pl.LightningModule):
         return parser
     
     
-def DEBIASM_mutlitask_train_and_pred(X_train, 
-                                     X_val, 
-                                     y_train, 
-                                     y_val,
-                                     batch_sim_strength=1, 
-                                     batch_size=None,
-                                     w_l2 = 0,
-                                     learning_rate=0.005,
-                                     l2_strength=0,
-                                     includes_batches=False,
-                                     val_split=0.1, 
-                                     test_split=0,
-                                     min_epochs=15,
-                                     prediction_loss=F.cross_entropy
-                                     ):
-    n_tasks = y_train.shape[1]
+    
+def DEBIASM_regression_train_and_pred(X_train, 
+                                      X_val, 
+                                      y_train, 
+                                      y_val,
+                                      batch_sim_strength=1, 
+                                      batch_size=None,
+                                      learning_rate=0.005,
+                                      l2_strength=0,
+                                      includes_batches=False, 
+                                      val_split=0.1, 
+                                      test_split=0.1,
+                                      w_l2=0, 
+                                      optimizer=Adam, 
+                                      min_epochs=25,
+                                      y_loss_scaling=1,
+                                      prediction_loss=F.mse_loss
+                                      ):
     
     if batch_size is None:
         batch_size=X_train.shape[0]
     
-    baseline_mods=[]
-    for i in range(n_tasks):
-
-        inds_tmp = y_train[:, i] > -1
-        baseline_mod = LogisticRegression(max_iter=2500)
-        baseline_mod.fit(rescale( X_train[:, 1:][inds_tmp]), 
-                         y_train[:, i][inds_tmp].astype(int))
-        baseline_mods.append(baseline_mod)
         
-        
-    model = PL_DEBIAS_multitask(X = torch.tensor( np.vstack((X_train, X_val)) ),
+    model = PL_SBCMP_regression(X = torch.tensor( np.vstack((X_train, X_val)) ),
                                 batch_sim_strength = batch_sim_strength,
                                 input_dim = X_train.shape[1]-1, 
-                                num_classes = 2, 
+                                num_classes = 1, 
                                 batch_size = batch_size,
                                 learning_rate = learning_rate,
                                 l2_strength = l2_strength,
-                                n_tasks=n_tasks,
-                                w_l2 = w_l2, 
+                                weighting_l2_strength=w_l2,
+                                y_loss_scaling=y_loss_scaling,
                                 prediction_loss=prediction_loss
                                 )
     
-    # initialize parameters to lbe similar to standard logistic regression
-    for i in range(n_tasks):
-        try:
-            model.linear_weights[i].weight.data[0]= \
-                            -torch.tensor( baseline_mods[i].coef_[0] )
-            model.linear_weights[i].weight.data[1]= \
-                             torch.tensor( baseline_mods[i].coef_[0] )
-        except:
-            pass
-
     ## build pl dataloader
     dm = SklearnDataModule(X_train, 
-                           y_train.astype(float),
-                           val_split=val_split,
+                           y_train, 
+                           val_split=val_split, 
                            test_split=test_split
                            )
 
     ## run training
     trainer = pl.Trainer(logger=False, 
                          checkpoint_callback=False,
-                         callbacks=[EarlyStopping(monitor="val_loss",
+                         callbacks=[EarlyStopping(monitor="val_loss", 
                                                   mode="min", 
                                                   patience=2)], 
                          check_val_every_n_epoch=2, 
                          weights_summary=None, 
-                         progress_bar_refresh_rate=1, 
+                         progress_bar_refresh_rate=0, 
                          min_epochs=min_epochs
                          )
+    
     trainer.fit(model, 
                 train_dataloaders=dm.train_dataloader(), 
                 val_dataloaders=dm.val_dataloader()
-                )
-    return(model)
+               )
+    
+    ## get val predictions
+    val_preds = model.forward( torch.tensor( X_val ).float() ).detach().numpy()
+    
+    ## return predictions and the model
+    return( val_preds, model )
 
 
-class MultitaskDebiasMClassifier(BaseEstimator):
-    """MultitaskDebiasMClassifier: an sklean-style wrapper for the Muiltitask DEBIAS-M torch implementation."""
+class DebiasMRegressor(BaseEstimator):
+    """DebiasMRegressorr: an sklean-style wrapper for the DEBIAS-M torch implementation."""
     def __init__(self,
                  *, 
                  batch_str = 'infer',
+                 mse_scaling = 'infer',
                  learning_rate=0.005, 
                  min_epochs=25,
                  l2_strength=0,
                  w_l2=0,
                  random_state=None,
-                 x_val=0,
-                 prediction_loss=F.cross_entropy
+                 x_val=0, 
+                 prediction_loss=F.mse_loss
                  ):
         
         self.learning_rate=learning_rate
@@ -316,6 +296,7 @@ class MultitaskDebiasMClassifier(BaseEstimator):
         self.w_l2=w_l2
         self.batch_str=batch_str
         self.x_val = x_val
+        self.mse_scaling=mse_scaling
         self.random_state=random_state
         self.prediction_loss=prediction_loss
         
@@ -327,28 +308,66 @@ class MultitaskDebiasMClassifier(BaseEstimator):
         self : object
             Returns the instance itself.
         """
+        
+        if type(X)==pd.DataFrame:
+            x = X.values
+        else:
+            x = X
+            
+        if type(self.x_val)==pd.DataFrame:
+            xval=self.x_val.values
+        else:
+            xval=self.x_val
+        
         if self.batch_str=='infer':
-            self.batch_str = batch_weight_feature_and_nbatchpairs_scaling(1e4, pd.DataFrame(np.vstack((X, self.x_val)) ) )
+            self.batch_str = batch_weight_feature_and_nbatchpairs_scaling(1e4, pd.DataFrame( np.vstack((X, self.x_val ) )))
+            
+        if self.mse_scaling=='infer':
+            self.mse_scaling = 1e3/np.var(y)
+        
             
         self.classes_ = np.unique(y)
-        
-        self.model = DEBIASM_mutlitask_train_and_pred(
-                                                      X, 
-                                                      self.x_val, 
-                                                      y, 
-                                                      0,
-                                                      batch_sim_strength = self.batch_str,
-                                                      learning_rate=self.learning_rate,
-                                                      min_epochs= self.min_epochs,
-                                                      l2_strength=self.l2_strength,
-                                                      w_l2 = self.w_l2,
-                                                      prediction_loss=self.prediction_loss
-                                                      )
+        preds, mod = DEBIASM_regression_train_and_pred(
+                                                       x, 
+                                                       xval, 
+                                                       y, 
+                                                       0,
+                                                       batch_sim_strength = self.batch_str,
+                                                       learning_rate=self.learning_rate,
+                                                       min_epochs= self.min_epochs,
+                                                       l2_strength=self.l2_strength,
+                                                       w_l2 = self.w_l2, 
+            #                                            y_loss_scaling=np.var(y)
+                                                       y_loss_scaling=self.mse_scaling, 
+                                                        prediction_loss=self.prediction_loss
+                                                       )
+        self.model = mod
+        self.val_preds = preds
         
         return self
+    
+    def transform(self, X):
+        if self.model is None:
+            raise(ValueError('You must run the `.fit()` method before executing this transformation'))
+            
+        if type(X)==pd.DataFrame:
+            x = torch.tensor(X.values)
+        else:
+            x = torch.tensor(X)
+            
+            
+        batch_inds, x = x[:, 0], x[:, 1:]
+        x = F.normalize( torch.pow(2, self.model.batch_weights[batch_inds.long()] ) * x, p=1 )
+        
+        if type(X)==pd.DataFrame:
+            return( pd.DataFrame(x.detach().numpy(), 
+                                 index=X.index, 
+                                 columns=X.columns[1:]))
+        else:
+            return( x.detach().numpy() )
 
     def predict(self, X):
-        """Perform multitask classification on test vectors X.
+        """Perform classification on test vectors X.
 
         Parameters
         ----------
@@ -357,12 +376,16 @@ class MultitaskDebiasMClassifier(BaseEstimator):
 
         Returns
         -------
-        y_all : n_task-length list of array-like of shape (n_samples,)
-                    Predicted classisifcations for X.
+        y : array-like of shape (n_samples,) or (n_samples, n_outputs)
+            Predicted target values for X.
         """
-        y = [ (a[:, 1]>0.5).detach().numpy()
-              for a in self.model.forward( torch.tensor( X ).float() )
-                 ]
+        
+        if type(X)==pd.DataFrame:
+            x = torch.tensor(X.values)
+        else:
+            x = torch.tensor(X)
+        
+        y = self.model.forward( x.float() ).detach().numpy()
         return y
 
     def predict_proba(self, X):
@@ -376,37 +399,12 @@ class MultitaskDebiasMClassifier(BaseEstimator):
 
         Returns
         -------
-        P : list of ndarray of shape (n_samples, 2)
+        P : ndarray of shape (n_samples, n_classes) or list of such arrays
             Returns the probability of the sample for each class in
             the model, where classes are ordered arithmetically, for each
             output.
         """
         
-        P = [ a.detach().numpy()
-              for a in self.model.forward( torch.tensor( X ).float() )
-                 ]
-        return P
-
-    
-    def transform(self, X):
-        """
-        Return the esimtimated debiased X values.
-
-        Parameters
-        ----------
-        X : array-like of shape (n_samples, n_features)
-            Test data.
-
-        Returns
-        -------
-         X_debiased : array-like of shape (n_samples, n_features)
-            Test data.
-        """
+        P = self.model.forward( torch.tensor( X ).float() ).detach().numpy()
         
-        if self.model is None:
-            raise(ValueError('You must run the `.fit()` method before executing this transformation'))
-            
-        x = torch.tensor( np.array(X) )
-        batch_inds, x = x[:, 0], x[:, 1:]
-        x = F.normalize( torch.pow(2, self.model.batch_weights[batch_inds.long()] ) * x, p=1 )
-        return( x.detach().numpy() )
+        return P
