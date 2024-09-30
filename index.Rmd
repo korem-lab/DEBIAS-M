@@ -73,15 +73,15 @@ DEBIAS-M contains classes for processing bias correction which integrate microbi
  * [__DebiasMClassifier__](DebiasMClassifier.html) - classification  
  * [__DebiasMRegressor__](DebiasMRegressor.html) - regression
  * [__MultitaskDebiasMClassifier__](MultitaskDebiasMClassifier.html) - multitask classification
- * [__MultitaskDebiasMClassifier__](MultitaskDebiasMClassifier.html) - multitask regression
+ * [__MultitaskDebiasMRegressor__](MultitaskDebiasMRegressor.html) - multitask regression
  * [__OnlineDebiasMClassifier__](OnlineDebiasMClassifier.html) - online adaptation
  * [__DebiasMClassifierLogAdd__](DebiasMClassifierLogAdd.html) - bias correction in logarithmic space
 
 <br>
 
-<div class='alert'>
-These `github.io` documentation pages are currently under development. While these will be completed soon, for the time being we recommend following the github `README.md`.
-</div>
+<!-- <div class='alert'> -->
+<!-- These `github.io` documentation pages are currently under development. While these will be completed soon, for the time being we recommend following the github `README.md`. -->
+<!-- </div> -->
 
 ## Installation
 

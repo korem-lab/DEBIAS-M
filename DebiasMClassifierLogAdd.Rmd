@@ -238,12 +238,12 @@ l{color: darkgreen}
 
 <div class="seealso">
 **See also:**<br>
-[__DEBIAS-M Classifier Log-additive Demo__](DebiasMClassifierLogAdd-demo.html)<br>
+[__DEBIAS-M Regression__](DebiasMRegressor.html)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-An example analysis using the DEBIAS-M classifier<br>
+Te DEBIAS-M regressor<br>
 [__DebiasMClassifier__](DebiasMClassifier.html)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Implementation of a DEBIAS-M regressor<br>
 <br>
-For more background on DEBIAS-M, refer to the scikit-learn to [our manuscript](https://www.biorxiv.org/content/10.1101/2024.02.09.579716v1). 
+For more background on DEBIAS-M, refer to [our manuscript](https://www.biorxiv.org/content/10.1101/2024.02.09.579716v1). 
 

@@ -229,12 +229,12 @@ l{color: darkgreen}
 
 <div class="seealso">
 **See also:**<br>
-[__DEBIAS-M Regressor Demo__](DebiasMRegressor-demo.html)<br>
+[__MultitaskDebiasMRegressor__](MultitaskDebiasMRegressor.html)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-An example analysis using the DEBIAS-M regressor<br>
+The multitask DEBIAS-M regressor<br>
 [__MultitaskDebiasMClassifier__](ultitaskDebiasMClassifier.html)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Implementation of the multitask DEBIAS-M classifier<br>
 <br>
-For more background on DEBIAS-M, refer to the scikit-learn to [our manuscript](https://www.biorxiv.org/content/10.1101/2024.02.09.579716v1). 
+For more background on DEBIAS-M, refer to [our manuscript](https://www.biorxiv.org/content/10.1101/2024.02.09.579716v1). 
 
