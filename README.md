@@ -19,7 +19,7 @@ All of our analyses tested DEBIAS-M in python 3.6, and per our `setup.py` file, 
 To begin, we recommend running the example demo we provide, which runs DEBIAS-M on a randomly generated dataset.
 
 ## DEBIAS-M Demo
-See the `Example.ipynb` notebook to see how to use the package. This notebook demonstrates the inputs and outputs of DEBIAS-M implementation (whichmimicks the standard scikit-learn structure), and fits a DEBIAS-M model on the synthetic data. For the generated example of 480 samples and 100 features, the DEBIAS-M example completes in less than a minute. We provide a copy of the walkthrough code below. For further details on reproducing all results on our main analyses, please refer to our CodeOcean capsule, or our github repository containing the analysis code. Refer to the `Multitask-example.ipynb` notebook for an example running DEBIAS-M on multiple phenotypes at once.
+See the `Example.ipynb` notebook to see how to use the package. This notebook demonstrates the inputs and outputs of DEBIAS-M implementation (which mimicks the standard scikit-learn structure), and fits a DEBIAS-M model on the synthetic data. For the generated example of 480 samples and 100 features, the DEBIAS-M example completes in less than a minute. We provide a copy of the walkthrough code below. For further details on reproducing all results on our main analyses, please refer to our github repository containing the analysis code: https://github.com/korem-lab/v1-DEBIAS-M-Analysis/. Refer to the `Multitask-example.ipynb` notebook for an example running DEBIAS-M on multiple phenotypes at once.
 
 ```python
 import numpy as np
@@ -28,7 +28,7 @@ from debiasm import DebiasMClassifier
 
 ### Build synthetic data for the example
 
-The single-task DEBIAS-M reuiqres two inputs: 1) an X matrix, of dimension `(n_samples) x (1 + n_features)`, whose first column denotes the batch the sample originates from, and whose remaining columns describe the read counts observed for the corresponding sample-taxon pair; and 2) a binary y vector, of length `(n_features)`, describing a corresponding sample's classification label.
+The single-task DEBIAS-M classifier requires two inputs: 1) an X matrix, of dimension `(n_samples) x (1 + n_features)`, whose first column denotes the batch the sample originates from, and whose remaining columns describe the read counts observed for the corresponding sample-taxon pair; and 2) a binary y vector, of length `(n_samples)`, providing the classification label of each sample.
 
 ```python
 np.random.seed(123)
@@ -70,7 +70,7 @@ y[:5]
 
 
 ```python
-## set the valdiation batch to '4'
+## set the validation batch to '4'
 val_inds = batches==4
 X_train, X_val = X_with_batch[~val_inds], X_with_batch[val_inds]
 y_train, y_val = y[~val_inds], y[val_inds]
