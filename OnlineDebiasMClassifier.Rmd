@@ -86,7 +86,7 @@ klippy::klippy(c('r', 'python', 'bash'),
 <br>
 The Online DEBIAS-M Classifier. <br> <br>
 This class is developed to allow a trained DEBIAS-M model to make predictions on samples from batches that are unobserved during training. This is done by running an online step to infer the biases on previously unobserved data when running the `transform` and `predict_proba` methods.<br><br>
-Similarly to other classes, this class implements multiplicative DEBIAS-M bias-correction using aggregated microbiome n_samples \times n_taxa read count matrices from multiple `X` samples, along with a provided binary `y` label. It can handle both read count and relative abundance inputs. <br> <br>
+Similarly to other classes, this class implements multiplicative bias-correction via DEBIAS-M for classification. It received as input an `X` matrix of n_samples \times n_taxa read count or relative abundancees from multiple microbiome samples, along with a binary `y` label. <br> <br>
 The 'batch_str' parameter weights the strength of the enforced cross-batch similarity, 'l2_strength' for an l2 regularization of the predictive parameters, and 'w_l2' for an l2 regularization of the bias-correction parameters. 'x_val' corresponds to microbiome inputs for a held-out set, for which the `y` labels are unavailable.
 
 <br>

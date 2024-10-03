@@ -87,7 +87,7 @@ klippy::klippy(c('r', 'python', 'bash'),
 
 <br>
 The DEBIAS-M Classifier implementation for logspace inputs. <br> <br>
-This class implements additive DEBIAS-M bias-correction, which models the processing-bias mechanism in logarithmic space representations of read count samples, such as the center log ratio transform.<br>
+This class implements additive DEBIAS-M bias-correction, which models the processing-bias mechanism in logarithmic space representations of read counts, such as the center log ratio transform.<br>
 
 This uses a microbiome n_samples \times n_taxa of some logarithmic processed read count matrices from multiple `X` samples, along with a provided binary `y` label.
 

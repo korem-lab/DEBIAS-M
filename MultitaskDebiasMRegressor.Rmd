@@ -86,7 +86,7 @@ klippy::klippy(c('r', 'python', 'bash'),
 
 <br>
 The Multitask DEBIAS-M Regressor. <br> <br>
-This class implements multiplicative DEBIAS-M bias-correction using aggregated microbiome n_samples \times n_taxa read count matrices from multiple `X` samples, along with provided binary `y` labels for at least two tasks. It can handle both read count and relative abundance inputs. <br> <br>
+This class implements multiplicative bias-correction via DEBIAS-M for a multitask regressor. It received as input an `X` matrix of n_samples \times n_taxa read count or relative abundancees from multiple microbiome samples, along with continuous regression target `y` for at least two tasks. <br> <br>
 The 'batch_str' parameter weights the strength of the enforced cross-batch similarity, 'l2_strength' for an l2 regularization of the predictive parameters, and 'w_l2' for an l2 regularization of the bias-correction parameters. 'x_val' corresponds to microbiome inputs for a held-out set, for which the `y` labels are unavailable.
 
 <br>
