@@ -6,6 +6,8 @@
 
 <img src='vignettes/DEBIAS-M-logo.png' align="right" height="250" />
 
+A python package designed to model and correct for processing biases and bactch effects in microbiome data using samples from multiple studies in a count or relative abundance matrix format. Visit the [DEBIAS-M website](https://korem-lab.github.io/DEBIAS-M/) for the most detailed documentation.
+
 ## Installation
 DEBIAS-M can be installed with pip through the following command:
 `pip install git+https://github.com/korem-lab/DEBIAS-M.git`
