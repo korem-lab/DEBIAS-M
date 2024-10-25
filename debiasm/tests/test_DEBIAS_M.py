@@ -59,6 +59,15 @@ class DMtest(unittest.TestCase):
         self.assertTrue( roc < .65 and roc > .35 )
         
         
+        ## make multiclass labels in {0,1,2}
+        y_multiclass = ( np.random.rand(n_samples)>0.5 ) + ( np.random.rand(n_samples)>0.5 )
+        y_train, y_val = y_multiclass[~val_inds], y_multiclass[val_inds]
+        dmc = DebiasMClassifier(x_val=X_val) ## give it the held-out inputs to account for
+                                            ## those domains shifts while training
+
+        dmc.fit(X_train, y_train)
+        self.assertTrue( dmc.predict_proba(X_val).shape[1] == np.unique(y_train).shape[0]) 
+        
         
     def test_DebiasMClassifierLogadd(self):
         np.random.seed(123)
@@ -108,6 +117,18 @@ class DMtest(unittest.TestCase):
         ## should be ~~0.5 in this notebook , since the data is all random
         
         self.assertTrue( roc < .65 and roc > .35 )
+        
+        
+        ## make multiclass labels in {0,1,2}
+        y_multiclass = ( np.random.rand(n_samples)>0.5 ) + ( np.random.rand(n_samples)>0.5 )
+        y_train, y_val = y_multiclass[~val_inds], y_multiclass[val_inds]
+        dmc = DebiasMClassifier(x_val=X_val) ## give it the held-out inputs to account for
+                                            ## those domains shifts while training
+
+        dmc.fit(X_train, y_train)
+        
+        self.assertTrue( dmc.predict_proba(X_val).shape[1] == np.unique(y_train).shape[0]) 
+        
         
         
     def test_OnlineDebiasMClassifier(self):

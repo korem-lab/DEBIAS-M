@@ -5,6 +5,7 @@ import torch.nn.functional as F
 from torch.nn.functional import pairwise_distance
 from sklearn.base import BaseEstimator
 from .torch_functions import DEBIASM_train_and_pred, DEBIASM_train_and_pred_log_additive
+from .multiclass import DEBIASM_multiclass_train_and_pred
 from torch.nn.functional import cross_entropy
 
 def batch_weight_feature_and_nbatchpairs_scaling(strength, df_with_batch):
@@ -47,18 +48,38 @@ class DebiasMClassifier(BaseEstimator):
             self.batch_str = batch_weight_feature_and_nbatchpairs_scaling(1e4, pd.DataFrame(np.vstack((X, self.x_val)) ) )
             
         self.classes_ = np.unique(y)
-        preds, mod = DEBIASM_train_and_pred(
-                                            X, 
-                                            self.x_val, 
-                                            y, 
-                                            0,
-                                            batch_sim_strength = self.batch_str,
-                                            learning_rate=self.learning_rate,
-                                            min_epochs= self.min_epochs,
-                                            l2_strength=self.l2_strength,
-                                            w_l2 = self.w_l2,
-                                            prediction_loss=self.prediction_loss
-                                            )
+        self.num_classes_ = self.classes_.shape[0]
+        if self.num_classes_==2:
+            preds, mod = DEBIASM_train_and_pred(
+                                                X, 
+                                                self.x_val, 
+                                                y, 
+                                                0,
+                                                batch_sim_strength = self.batch_str,
+                                                learning_rate=self.learning_rate,
+                                                min_epochs= self.min_epochs,
+                                                l2_strength=self.l2_strength,
+                                                w_l2 = self.w_l2,
+                                                prediction_loss=self.prediction_loss
+                                                )
+        else:
+            preds, mod = DEBIASM_multiclass_train_and_pred(
+                                                X, 
+                                                self.x_val, 
+                                                y, 
+                                                0,
+                                                batch_sim_strength = self.batch_str,
+                                                learning_rate=self.learning_rate,
+                                                min_epochs= self.min_epochs,
+                                                l2_strength=self.l2_strength,
+                                                w_l2 = self.w_l2,
+                                                prediction_loss=self.prediction_loss, 
+                                                num_classes=self.num_classes_
+                                                )
+            
+            
+            
+            
         self.model = mod
         self.val_preds = preds
         
@@ -297,18 +318,38 @@ class DebiasMClassifierLogAdd(BaseEstimator):
         self.classes_ = np.unique(y)
         if self.batch_str=='infer':
             self.batch_str = batch_weight_feature_and_nbatchpairs_scaling(1e3, pd.DataFrame(np.vstack((X, self.x_val)) ) )
-        preds, mod = DEBIASM_train_and_pred_log_additive(
-                                                X, 
-                                                self.x_val, 
-                                                y, 
-                                                0,
-                                                batch_sim_strength = self.batch_str,
-                                                learning_rate=self.learning_rate,
-                                                min_epochs= self.min_epochs,
-                                                l2_strength=self.l2_strength,
-                                                w_l2 = self.w_l2,
-                                                prediction_loss=self.prediction_loss
-                                                )
+            
+            
+        self.classes_ = np.unique(y)
+        self.num_classes_ = self.classes_.shape[0]
+        if self.num_classes_==2:
+            preds, mod = DEBIASM_train_and_pred_log_additive(
+                                                    X, 
+                                                    self.x_val, 
+                                                    y, 
+                                                    0,
+                                                    batch_sim_strength = self.batch_str,
+                                                    learning_rate=self.learning_rate,
+                                                    min_epochs= self.min_epochs,
+                                                    l2_strength=self.l2_strength,
+                                                    w_l2 = self.w_l2,
+                                                    prediction_loss=self.prediction_loss
+                                                    )
+        else:
+            preds, mod = DEBIASM_multiclass_train_and_pred_log_additive(
+                                                    X, 
+                                                    self.x_val, 
+                                                    y, 
+                                                    0,
+                                                    batch_sim_strength = self.batch_str,
+                                                    learning_rate=self.learning_rate,
+                                                    min_epochs= self.min_epochs,
+                                                    l2_strength=self.l2_strength,
+                                                    w_l2 = self.w_l2,
+                                                    prediction_loss=self.prediction_loss, 
+                                                    num_classes=self.self.num_classes_
+                                                    )
+        
         self.model = mod
         self.val_preds = preds
         
