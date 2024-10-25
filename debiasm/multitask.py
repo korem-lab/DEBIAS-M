@@ -286,7 +286,7 @@ def DEBIASM_mutlitask_train_and_pred(X_train,
                                                   patience=2)], 
                          check_val_every_n_epoch=2, 
                          weights_summary=None, 
-                         progress_bar_refresh_rate=1, 
+                         progress_bar_refresh_rate=0, 
                          min_epochs=min_epochs
                          )
     trainer.fit(model, 

@@ -337,7 +337,6 @@ class DebiasMRegressor(BaseEstimator):
                                                        min_epochs= self.min_epochs,
                                                        l2_strength=self.l2_strength,
                                                        w_l2 = self.w_l2, 
-            #                                            y_loss_scaling=np.var(y)
                                                        y_loss_scaling=self.mse_scaling, 
                                                         prediction_loss=self.prediction_loss
                                                        )
