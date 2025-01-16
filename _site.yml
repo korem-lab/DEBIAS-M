@@ -29,6 +29,11 @@ navbar:
     menu: 
     - text: DebiasMClassifierLogAdd
       href: DebiasMClassifierLogAdd.html
+  - text: Tutorial
+    icon: fa-truck-fast
+    menu: 
+     - text: Classifier
+       href: Tutorial.html
   - text: Related documents
     icon: fa-binoculars
     menu:

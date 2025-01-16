@@ -312,6 +312,20 @@ $(document).ready(function () {
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-truck-fast"></span>
+     
+    Tutorial
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Tutorial.html">Classifier</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     <span class="fa fa-binoculars"></span>
      
     Related documents
@@ -427,7 +441,7 @@ prediction_loss=torch.nn.functional.binary_cross_entropy<br>        
 <p><br> The DEBIAS-M Classifier implementation for logspace inputs. <br>
 <br> This class implements additive DEBIAS-M bias-correction, which
 models the processing-bias mechanism in logarithmic space
-representations of read count samples, such as the center log ratio
+representations of read counts, such as the center log ratio
 transform.<br></p>
 <p>This uses a microbiome n_samples n_taxa of some logarithmic processed
 read count matrices from multiple <code>X</code> samples, along with a
@@ -509,9 +523,9 @@ training.</li>
 <h2>Example</h2>
 <pre class="python"><code>## import packages
 import numpy as np
-from skelarn.metrics import roc_auc_score
+from sklearn.metrics import roc_auc_score
 from skbio.stats.composition import clr
-from debiasm import DebiasMClassifier
+from debiasm import DebiasMClassifierLogAdd
 
 
 ## generate data for the example

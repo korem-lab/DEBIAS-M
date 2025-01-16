@@ -123,8 +123,8 @@ Example
 ```python
 ## import packages
 import numpy as np
-from skelarn.metrics import roc_auc_score
-from debiasm import DebiasMClassifier
+from sklearn.metrics import roc_auc_score
+from debiasm import OnlineDebiasMClassifier
 
 ## generate data for the example
 np.random.seed(123)

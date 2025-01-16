@@ -6,3 +6,4 @@ all: _site.yml
 	Rscript -e "rmarkdown::render('MultitaskDebiasMRegressor.Rmd')"
 	Rscript -e "rmarkdown::render('OnlineDebiasMClassifier.Rmd')"
 	Rscript -e "rmarkdown::render('DebiasMClassifierLogAdd.Rmd')"
+	Rscript -e "rmarkdown::render('Tutorial.Rmd')"

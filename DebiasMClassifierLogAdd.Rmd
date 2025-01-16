@@ -130,9 +130,9 @@ Example
 ```python
 ## import packages
 import numpy as np
-from skelarn.metrics import roc_auc_score
+from sklearn.metrics import roc_auc_score
 from skbio.stats.composition import clr
-from debiasm import DebiasMClassifier
+from debiasm import DebiasMClassifierLogAdd
 
 
 ## generate data for the example

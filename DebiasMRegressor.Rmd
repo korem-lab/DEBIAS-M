@@ -127,7 +127,7 @@ Example
 ```python
 ## import packages
 import numpy as np
-from skelarn.metrics import roc_auc_score
+from sklearn.metrics import r2_score
 from debiasm import DebiasMRegressor
 
 ## generate data for the example
@@ -159,7 +159,7 @@ dmc = DebiasMRegressor(x_val=X_val) ## give it the held-out inputs to account fo
 dmc.fit(X_train, y_train)
 
 ## Assess results
-### should be ~~0.5 in this example , since the data is all random
+### should be ~~0 in this example , since the data is all random
 r2_score(y_val, dmc.predict(X_val)) 
 
 ## extract the 'DEBIAS-ed' data for other downstream analyses, if applicable 

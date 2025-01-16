@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Tutorial.knit</title>
+
+<script src="Tutorial_files/header-attrs-2.20/header-attrs.js"></script>
+<script src="Tutorial_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="Tutorial_files/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="Tutorial_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="Tutorial_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="Tutorial_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="Tutorial_files/navigation-1.1/tabsets.js"></script>
+<link href="Tutorial_files/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="Tutorial_files/highlightjs-9.12.0/highlight.js"></script>
+<script src="Tutorial_files/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="Tutorial_files/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="Tutorial_files/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="Tutorial_files/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<link href="Tutorial_files/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="Tutorial_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">DEBIAS-M</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-bullseye"></span>
+     
+    Classification
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="DebiasMClassifier.html">DebiasMClassifier</a>
+    </li>
+    <li>
+      <a href="MultitaskDebiasMClassifier.html">MultitaskDebiasMClassifier</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-sliders"></span>
+     
+    Regression
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="DebiasMRegressor.html">DebiasMRegressor</a>
+    </li>
+    <li>
+      <a href="MultitaskDebiasMRegressor.html">MultitaskDebiasMRegressor</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-globe"></span>
+     
+    Online learning
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="OnlineDebiasMClassifier.html">OnlineDebiasMClassifier</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-plus-minus"></span>
+     
+    Log-space
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="DebiasMClassifierLogAdd.html">DebiasMClassifierLogAdd</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-truck-fast"></span>
+     
+    Tutorial
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Tutorial.html">Classifier</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-binoculars"></span>
+     
+    Related documents
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="https://www.biorxiv.org/content/10.1101/2024.02.09.579716v1">DEBIAS-M Manuscript</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/korem-lab/DEBIAS-M/issues">
+    <span class="fa fa-comment"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/korem-lab/DEBIAS-M/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+
+</div>
+
+
+<style>
+.darkgreen {
+  background-color: #577836;
+  color: white;
+  border: 2px solid black;
+  margin: 20px;
+  padding: 20px;
+} 
+</style>
+<style>
+    body { 
+            background-color: #16153C;
+            text-color: whitesmoke;
+            color: whitesmoke;
+            font-family: Palatino;
+            font-size: 12pt;
+            margin: 10px;
+            padding: 0px;
+            }
+</style>
+<style type="text/css">
+.bashform {
+  background-color: #DD4814;
+  border: 3px solid #987CAC;
+  font-weight: bold;
+  color: whitesmoke; 
+}
+</style>
+<script>
+  addClassKlippyTo("pre.r, pre.python, pre.bash");
+  addKlippy('right', 'top', '#A52A2A', '1', 'Copy', 'Copied!');
+</script>
+<style>
+.citation {
+  background-color: #A1DDF2;
+  color: black;
+  border: 3px solid #987CAC;
+  margin: 20px;
+  padding: 20px;
+} 
+</style>
+<style>
+.codecell {
+  background-color: #A1DDF2;
+  color: black;
+  border: 3px solid #987CAC;
+  margin: 10px;
+  padding: 10px;
+  font-weight: bold;
+  }
+  li {
+    list-style-type: none
+  }
+</style>
+<p><br><br><br></p>
+<div id="tutorial" class="section level1">
+<h1>Tutorial</h1>
+<p>In this page, we offer an example analysis of the DEBIAS-M
+classifier. For this analysis, we use the collection of HIV studies that
+is available on <a
+href="https://www.synapse.org/#!Synapse:syn18406854">Synapse</a>. For a
+full set of analyses performed by DEBIAS-M on this dataset, please refer
+to the <a href="10.1101/2024.02.09.579716">DEBIAS-M publication</a>.</p>
+<div id="loading-packages-data" class="section level2">
+<h2>Loading packages, data</h2>
+<pre class="python"><code>## import packages
+import numpy as np
+import pandas as pd
+from debiasm import DebiasMClassifier
+from debiasm.torch_functions import rescale
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import roc_curve, auc
+from sklearn.metrics import pairwise_distances
+from sklearn.linear_model import LogisticRegression
+from skbio.stats.ordination import pcoa
+import matplotlib.pyplot as plt
+
+
+import numpy as np
+import pandas as pd
+import glob
+import os
+
+def load_HIVRC(data_path):
+    df = pd.read_csv(os.path.join(data_path,
+                                   &#39;insight.merged_otus.txt&#39;),
+                     sep=&#39;\t&#39;, 
+                     index_col=0
+                    ).iloc[:, :-1].T
+                    
+    ## we generally recommend some minimum presence OTU filter 
+    df = df.loc[:,((df&gt;0).sum(axis=0) &gt; df.shape[0]*.05 )] 
+    md = pd.read_csv(os.path.join(data_path,
+                                  &#39;metadata.tsv&#39;),
+                     sep=&#39;\t&#39;)
+    md = md.set_index(&#39;SeqID&#39;).loc[df.index]
+    md[&#39;label&#39;] = md[&#39;hivstatus&#39;]==1
+    return((df, md))
+
+
+df, md = data_loading.load_HIVRC(data_path=&#39;.&#39;) ## this assumes the data is downloaded to the same directory, can change as needed
+X_with_batch = pd.concat([pd.Series(pd.Categorical(md.Study).codes, 
+                                    index=md.index, 
+                                    name=&#39;batch&#39;),
+                          df
+                          ], axis=1)
+                              
+                              </code></pre>
+</div>
+<div id="pcoa-of-raw-data" class="section level2">
+<h2>PCoA of raw data</h2>
+<pre class="python"><code># Compute a distance matrix (using Bray-Curtis distance)
+distance_matrix = pairwise_distances(rescale(df.values),
+                                     metric=&#39;braycurtis&#39;)
+
+# Perform PCoA analysis
+ordination_result = pcoa(distance_matrix, number_of_dimensions=2)
+
+# Extract the first two principal coordinates
+x_coords = ordination_result.samples.iloc[:, 0]
+y_coords = ordination_result.samples.iloc[:, 1]
+
+
+plt.figure(figsize=(8,8))
+sns.scatterplot(x=x_coords,
+                y=y_coords,
+                hue=md.Study.values,
+                s=100
+                )
+
+# Add labels and title
+plt.xlabel(&#39;PCoA 1&#39;)
+plt.ylabel(&#39;PCoA 2&#39;)
+plt.title(&#39;PCoA of the raw data&#39;)
+
+plt.legend().remove()
+plt.grid(True)
+plt.show()</code></pre>
+<center>
+<img src="images/pcoa-raw.png" class="center" alt="drawing" style="height:400px;" />
+</center>
+</div>
+<div id="predictive-analysis" class="section level2">
+<h2>Predictive analysis</h2>
+<p>We demonstrate the following code using DEBIAS-M with default
+parameters, using one study as a test set.</p>
+<pre class="python"><code>test_sd_number=5 ## index of the test study
+train_inds = md.Study!=md.Study.unique()[test_sd_number]
+
+## run DEBIAS-M
+dmc=DebiasMClassifier(x_val=X_with_batch.loc[~train_inds].values) ## provide the read counts for the test set
+dmc.fit(X_with_batch.loc[train_inds].values, md.label.loc[train_inds].values) ## the read counts and labels for the training studies
+
+## transform the data
+x_dmc=dmc.transform(x_with_batch)
+
+# Generate a PCoA plot
+## Compute a distance matrix (using Bray-Curtis distance)
+distance_matrix = pairwise_distances(x_dmc.values,
+                                     metric=&#39;braycurtis&#39;)
+# Perform PCoA analysis
+ordination_result = pcoa(distance_matrix, number_of_dimensions=2)
+
+# Extract the first two principal coordinates
+x_coords = ordination_result.samples.iloc[:, 0]
+y_coords = ordination_result.samples.iloc[:, 1]
+
+plt.figure(figsize=(8,8))
+sns.scatterplot(x=x_coords,
+                y=y_coords,
+                hue=md.Study.values,
+                s=100
+                )
+
+# Add labels and title
+plt.xlabel(&#39;PCoA 1&#39;)
+plt.ylabel(&#39;PCoA 2&#39;)
+plt.title(&#39;PCoA plot of the DEBIAS-ed data&#39;)
+plt.legend().remove()
+plt.grid(True)
+plt.show()</code></pre>
+<center>
+<img src="images/pcoa-debias.png" class="center" alt="drawing" style="height:400px;" />
+</center>
+</div>
+<div id="assess-predictions" class="section level2">
+<h2>Assess predictions</h2>
+<pre class="python"><code># Function to plot ROC curves for multiple prediction arrays
+def plot_roc_curves(predictions_list, 
+                    y_true, 
+                    name_list):
+    plt.figure(figsize=(8,8))
+    for i, y_pred in enumerate(predictions_list):
+        fpr, tpr, _ = roc_curve(y_true, y_pred)
+        roc_auc = auc(fpr, tpr)
+        plt.plot(fpr, tpr, label=f&#39;{name_list[i]} (AUROC = {roc_auc:.2f})&#39;, linewidth=5)
+
+    plt.plot([0, 1], [0, 1], &#39;k--&#39;, lw=5)
+    plt.xlabel(&#39;False Positive Rate&#39;)
+    plt.ylabel(&#39;T&quot;rue Positive Rate&#39;)
+    plt.title(&#39;ROC Curve&#39;)
+    plt.legend(loc=&#39;lower right&#39;)
+    plt.grid(False)
+    plt.title(&#39;ROC curve of DEBIAS-M cross-study HIV predictions&#39;)
+    
+## run baseline linear model on raw data (equivalent to debias-m&#39;s model without the bias inference)    
+lr=LogisticRegression(penalty=&#39;none&#39;, 
+                      max_iter=1e3, 
+                      solver=&#39;newton-cg&#39;
+                      )
+
+lr.fit(rescale(df.loc[train_inds]), md.label.loc[train_inds])
+plot_roc_curves([lr.predict_proba(df.loc[~train_inds])[:, 1],
+                 dmc.predict_proba(X_with_batch.loc[~train_inds].values)[:, 1] ], 
+                 md.label.values[~train_inds.values], 
+                 [&#39;Raw&#39;,
+                  &#39;DEBIAS-M&#39;
+                  ])
+plt.show()</code></pre>
+<center>
+<img src="images/roc-debias.png" class="center" alt="drawing" style="height:400px" />
+</center>
+<style>
+.seealso {
+  background-color: #F6B302;
+  color: black;
+  border: 2px solid black;
+  margin: 20px;
+  padding: 20px;
+} 
+
+l{color: darkgreen}
+</style>
+<div class="seealso">
+<p><strong>See also:</strong><br> <a
+href="MultitaskDebiasMClassifier.html"><strong>Multitask DEBIAS-M
+Classifier</strong></a><br>        The multitask DEBIAS-M classifier<br>
+<a
+href="DebiasMRegressor.html"><strong>DebiasMRegressor</strong></a><br>
+       Implementation of a DEBIAS-M regressor<br> <br> For more
+background on DEBIAS-M, refer to <a
+href="https://www.biorxiv.org/content/10.1101/2024.02.09.579716v1">our
+manuscript</a>.</p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

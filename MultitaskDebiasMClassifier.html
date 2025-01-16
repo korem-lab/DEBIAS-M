@@ -312,6 +312,20 @@ $(document).ready(function () {
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-truck-fast"></span>
+     
+    Tutorial
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Tutorial.html">Classifier</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     <span class="fa fa-binoculars"></span>
      
     Related documents
@@ -425,16 +439,15 @@ prediction_loss=torch.nn.functional.binary_cross_entropy<br>        
             )</p>
 </div>
 <p><br> The Multitask DEBIAS-M Classifier. <br> <br> This class
-implements multiplicative DEBIAS-M bias-correction using aggregated
-microbiome n_samples n_taxa read count matrices from multiple
-<code>X</code> samples, along with provided binary <code>y</code> labels
-for at least two tasks. It can handle both read count and relative
-abundance inputs. <br> <br> The ‘batch_str’ parameter weights the
-strength of the enforced cross-batch similarity, ‘l2_strength’ for an l2
-regularization of the predictive parameters, and ‘w_l2’ for an l2
-regularization of the bias-correction parameters. ‘x_val’ corresponds to
-microbiome inputs for a held-out set, for which the <code>y</code>
-labels are unavailable.</p>
+implements multiplicative bias-correction via DEBIAS-M for a multitask
+classifier. It received as input an <code>X</code> matrix of n_samples
+n_taxa read count or relative abundancees from multiple microbiome
+samples, along with binary <code>y</code> labels for at least two tasks.
+<br> <br> The ‘batch_str’ parameter weights the strength of the enforced
+cross-batch similarity, ‘l2_strength’ for an l2 regularization of the
+predictive parameters, and ‘w_l2’ for an l2 regularization of the
+bias-correction parameters. ‘x_val’ corresponds to microbiome inputs for
+a held-out set, for which the <code>y</code> labels are unavailable.</p>
 <p><br></p>
 <div id="parameters" class="section level2">
 <h2>Parameters</h2>
@@ -507,8 +520,8 @@ training.</li>
 <h2>Example</h2>
 <pre class="python"><code>## import packages
 import numpy as np
-from skelarn.metrics import roc_auc_score
-from debiasm import DebiasMClassifier
+from sklearn.metrics import roc_auc_score
+from debiasm import MultitaskDebiasMClassifier
 
 ## generate data for the example
 np.random.seed(123)

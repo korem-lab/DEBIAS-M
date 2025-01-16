@@ -109,7 +109,7 @@ The inputs, outputs, and syntax within the DEBIAS-M package are built using a sc
 ```python
 ## import packages
 import numpy as np
-from skelarn.metrics import roc_auc_score
+from sklearn.metrics import roc_auc_score
 from debiasm import DebiasMClassifier
 
 ## generate data for the example
