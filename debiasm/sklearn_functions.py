@@ -119,7 +119,12 @@ class DebiasMClassifier(BaseEstimator):
         y : array-like of shape (n_samples,) or (n_samples, n_outputs)
             Predicted target values for X.
         """
-        y = self.model.forward( torch.tensor( X ).float() ).detach().numpy()[:, 1]>0.5
+        x=X.copy()
+        if type(x)==pd.DataFrame:
+            x=x.values
+        
+        
+        y = self.model.forward( torch.tensor( x ).float() ).detach().numpy()[:, 1]>0.5
         return y
 
     def predict_proba(self, X):
@@ -138,8 +143,11 @@ class DebiasMClassifier(BaseEstimator):
             the model, where classes are ordered arithmetically, for each
             output.
         """
+        x=X.copy()
+        if type(x)==pd.DataFrame:
+            x=x.values
         
-        P = self.model.forward( torch.tensor( X ).float() ).detach().numpy()
+        P = self.model.forward( torch.tensor( x ).float() ).detach().numpy()
         
         return P
 
@@ -193,7 +201,7 @@ class OnlineDebiasMClassifier(BaseEstimator):
         
         return self
     
-    def transform(self, X):
+    def transform_(self, X):
         if self.model is None:
             raise(ValueError('You must run the `.fit()` method before executing this transformation'))
             
@@ -211,8 +219,7 @@ class OnlineDebiasMClassifier(BaseEstimator):
                                  columns=X.columns[1:]))
         else:
             return( x.detach().numpy() )
-
-
+        
     
     def estimate_test_biases(self, x_test, iters=10000):
         
@@ -245,13 +252,49 @@ class OnlineDebiasMClassifier(BaseEstimator):
         debiased_X_test = F.normalize( x_test_tensor * torch.pow(2, test_bcfs), p=1 )
         return(debiased_X_test)
         
+    def transform(self, X):
+        
+        return_df=False
+        if type(X)==pd.DataFrame:
+            x=X.values
+            return_df=True
+        else:
+            x=X
+        
+        batches = x[:, 0] 
+        trbs=self.train_X.iloc[:,0].unique()
 
+        trb_inds = np.array([a in trbs for a in batches])
+        # teb_inds = [a for a in batches if a not in trbs]
+
+        deb_trbs = self.transform_(x[trb_inds])
+        unique_tebs= np.unique( x[~trb_inds][:, 0] ) 
+        
+        deb_tebs = [ self.estimate_test_biases(
+                            x[~trb_inds][ x[~trb_inds][:, 0]==a ][:, 1:]
+                             ).detach().numpy()
+                            for a in unique_tebs ]
+
+        debiased_X = ( x.copy()[:, 1:] * 0 ).astype(float)
+        
+        debiased_X[trb_inds] = deb_trbs
+        for i, a in enumerate(unique_tebs):
+            debiased_X[x[:, 0]==a] = deb_tebs[i]
+            
+            
+        if return_df:
+            return(pd.DataFrame(debiased_X,
+                                index=X.index, 
+                                columns=X.columns[1:]
+                                ))
+        return(debiased_X)
+    
     def predict(self, X):
         """Perform classification on test vectors X.
 
         Parameters
         ----------
-        X : array-like of shape (n_samples, n_features)
+        X : array-like of shape (n_samples, 1+n_features)
             Test data.
 
         Returns
@@ -259,8 +302,14 @@ class OnlineDebiasMClassifier(BaseEstimator):
         y : array-like of shape (n_samples,) or (n_samples, n_outputs)
             Predicted target values for X.
         """
-        debiased_X_test = self.estimate_test_biases(X)
-        y = F.softmax( self.model.linear(debiased_X_test), dim=1 )[:, 1].detach().numpy() > 0.5
+        
+        x=self.transform(X)
+        if type(x)==pd.DataFrame:
+            x=x.values
+        
+        y = F.softmax( self.model.linear( torch.tensor( x ).float() ), 
+                      dim=1 
+                      )[:, 1].detach().numpy() > 0.5
         return y
 
     def predict_proba(self, X):
@@ -269,7 +318,7 @@ class OnlineDebiasMClassifier(BaseEstimator):
 
         Parameters
         ----------
-        X : array-like of shape (n_samples, n_features)
+        X : array-like of shape (n_samples, 1+n_features)
             Test data.
 
         Returns
@@ -279,8 +328,13 @@ class OnlineDebiasMClassifier(BaseEstimator):
             the model, where classes are ordered arithmetically, for each
             output.
         """
-        debiased_X_test = self.estimate_test_biases(X)
-        P = F.softmax( self.model.linear(debiased_X_test), dim=1 ).detach().numpy()
+        x=self.transform(X)
+        if type(x)==pd.DataFrame:
+            x=x.values
+            
+        P = F.softmax( self.model.linear( torch.tensor( x ).float() ), 
+                      dim=1 
+                      ).detach().numpy()
         return P
     
     
@@ -391,7 +445,12 @@ class DebiasMClassifierLogAdd(BaseEstimator):
         y : array-like of shape (n_samples,) or (n_samples, n_outputs)
             Predicted target values for X.
         """
-        y = self.model.forward( torch.tensor( X ).float() ).detach().numpy()[:, 1]>0.5
+        
+        x=X.copy()
+        if type(x)==pd.DataFrame:
+            x=x.values
+        
+        y = self.model.forward( torch.tensor( x ).float() ).detach().numpy()[:, 1]>0.5
         return y
 
     def predict_proba(self, X):
@@ -411,7 +470,11 @@ class DebiasMClassifierLogAdd(BaseEstimator):
             output.
         """
         
-        P = self.model.forward( torch.tensor( X ).float() ).detach().numpy()
+        x=X.copy()
+        if type(x)==pd.DataFrame:
+            x=x.values
+        
+        P = self.model.forward( torch.tensor( x ).float() ).detach().numpy()
         
         return P
     

@@ -133,14 +133,19 @@ class DMtest(unittest.TestCase):
         
     def test_OnlineDebiasMClassifier(self):
         np.random.seed(123)
+        ## import packages
+        import numpy as np
+        from sklearn.metrics import roc_auc_score
+        from debiasm import OnlineDebiasMClassifier
+
+        ## generate data for the example
+        np.random.seed(123)
         n_samples = 96*5
         n_batches = 5
         n_features = 100
 
         ## the read count matrix
         X = ( np.random.rand(n_samples, n_features) * 1000 ).astype(int)
-        
-        X = np.log10( 1 + X ) ## just some mapping into logspace
 
         ## the labels
         y = np.random.rand(n_samples)>0.5
@@ -150,33 +155,20 @@ class DMtest(unittest.TestCase):
 
         ## we assume the batches are numbered ints starting at '0',
         ## and they are in the first column of the input X matrices
-        ## for now, you can just set the first column to all zeros if we have only one batch
-
         X_with_batch = np.hstack((batches[:, np.newaxis], X))
-
         ## set the valdiation batch to '4'
         val_inds = batches==4
         X_train, X_val = X_with_batch[~val_inds], X_with_batch[val_inds]
         y_train, y_val = y[~val_inds], y[val_inds]
 
-
-        dmc = OnlineDebiasMClassifier() ## give it the held-out inputs to account for
+        ### Run DEBIAS-M, using standard sklearn object methods
+        odmc = OnlineDebiasMClassifier() ## give it the held-out inputs to account for
                                             ## those domains shifts while training
+        odmc.fit(X_train, y_train)
 
-        dmc.fit(X_train, y_train)
-        roc= roc_auc_score(y_val, dmc.predict_proba(X_val[:, 1:])[:, 1]) ## drop the 'batch' columns
-        ## should be ~~0.5 in this notebook , since the data is all random
-        
-        self.assertTrue( roc < .65 and roc > .35 )
-        
-        
-        
-        
-        dmc = OnlineDebiasMClassifier(prediction_loss=mse_loss) ## give it the held-out inputs to account for
-                                            ## those domains shifts while training
-
-        dmc.fit(X_train, y_train)
-        roc= roc_auc_score(y_val, dmc.predict_proba(X_val[:, 1:])[:, 1]) ## drop the 'batch' columns
+        ## extract the 'DEBIAS-ed' data for other downstream analyses, if applicable 
+        X_debiassed = odmc.transform(X_with_batch)
+        roc= roc_auc_score(y_val, odmc.predict_proba(X_val)[:, 1]) ## drop the 'batch' columns
         ## should be ~~0.5 in this notebook , since the data is all random
         
         self.assertTrue( roc < .65 and roc > .35 )
