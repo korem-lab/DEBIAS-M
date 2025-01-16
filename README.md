@@ -6,7 +6,8 @@
 
 <img src='vignettes/DEBIAS-M-logo.png' align="right" height="250" />
 
-A python package designed to model and correct for processing biases and bactch effects in microbiome data using samples from multiple studies in a count or relative abundance matrix format. Visit the [DEBIAS-M website](https://korem-lab.github.io/DEBIAS-M/) for the most detailed documentation.
+Welcome to DEBIAS-M! This is a python package for processing bias correction in microbiome studies, that facilitates data harmonization, domain adaptation, predictive modeling, and batch correction. Uses samples from multiple studies in a count or relative abundance matrix format. Visit the [DEBIAS-M website](https://korem-lab.github.io/DEBIAS-M/) for the most detailed documentation.
+
 
 ## Installation
 DEBIAS-M can be installed with pip through the following command:
@@ -15,10 +16,10 @@ As DEBIAS-M is a light package, the install time requires less than a minute on 
 
 
 ## System requirements
-All of our analyses tested DEBIAS-M in python 3.6, and per our `setup.py` file, `numpy`, `pandas`, `torch==1.10.2`, `pytorch-lightning==1.5.10`, and `lightning-bolts==0.4.0`. All of our analyses have been run on a local unix machine, and on an ubuntu CodeOcean capsule. No non-standard hardware is required for DEBIAS-M.
+Per our `setup.py` file: `python<3.11`,`numpy`, `pandas`, `torch==1.10.2`, `pytorch-lightning==1.5.10`, and `lightning-bolts==0.4.0`. No non-standard hardware is required for DEBIAS-M.
 
 ## Instructions for use
-To begin, we recommend running the example demo we provide, which runs DEBIAS-M on a randomly generated dataset.
+To begin, we recommend running the example demo we provide, which runs DEBIAS-M on a randomly generated dataset. We offer examples for all DEBIAS-M classes in the [DEBIAS-M website](https://korem-lab.github.io/DEBIAS-M/). 
 
 ## DEBIAS-M Demo
 See the `Example.ipynb` notebook to see how to use the package. This notebook demonstrates the inputs and outputs of DEBIAS-M implementation (which mimicks the standard scikit-learn structure), and fits a DEBIAS-M model on the synthetic data. For the generated example of 480 samples and 100 features, the DEBIAS-M example completes in less than a minute. We provide a copy of the walkthrough code below. For further details on reproducing all results on our main analyses, please refer to our github repository containing the analysis code: https://github.com/korem-lab/v1-DEBIAS-M-Analysis/. Refer to the `Multitask-example.ipynb` notebook for an example running DEBIAS-M on multiple phenotypes at once.
