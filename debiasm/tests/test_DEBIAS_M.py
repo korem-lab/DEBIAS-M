@@ -132,11 +132,9 @@ class DMtest(unittest.TestCase):
         
         
     def test_OnlineDebiasMClassifier(self):
+        
         np.random.seed(123)
         ## import packages
-        import numpy as np
-        from sklearn.metrics import roc_auc_score
-        from debiasm import OnlineDebiasMClassifier
 
         ## generate data for the example
         np.random.seed(123)
