@@ -76,7 +76,7 @@ klippy::klippy(c('r', 'python', 'bash'),
 
 # Tutorial
 
-In this page, we offer an example analysis of the DEBIAS-M classifier. For this analysis, we use the collection of HIV studies that is available on [Synapse](https://www.synapse.org/#!Synapse:syn18406854). For a full set of analyses performed by DEBIAS-M on this dataset, please refer to the [DEBIAS-M publication](10.1101/2024.02.09.579716).
+In this page, we offer an example analysis of the DEBIAS-M classifier. For this analysis, we use the collection of HIV studies that is available on [Synapse](https://www.synapse.org/#!Synapse:syn18406854). For a full set of analyses performed by DEBIAS-M on this dataset, please refer to the [DEBIAS-M manuscript](https://www.biorxiv.org/content/10.1101/2024.02.09.579716v1).
 
 
 Loading packages, data
@@ -118,7 +118,7 @@ def load_HIVRC(data_path):
     return((df, md))
 
 
-df, md = data_loading.load_HIVRC(data_path='.') ## this assumes the data is downloaded to the same directory, can change as needed
+df, md = load_HIVRC(data_path='.') ## this assumes the data is downloaded to the same directory, can change as needed
 X_with_batch = pd.concat([pd.Series(pd.Categorical(md.Study).codes, 
                                     index=md.index, 
                                     name='batch'),
@@ -176,7 +176,7 @@ dmc=DebiasMClassifier(x_val=X_with_batch.loc[~train_inds].values) ## provide the
 dmc.fit(X_with_batch.loc[train_inds].values, md.label.loc[train_inds].values) ## the read counts and labels for the training studies
 
 ## transform the data
-x_dmc=dmc.transform(x_with_batch)
+x_dmc=dmc.transform(X_with_batch)
 
 # Generate a PCoA plot
 ## Compute a distance matrix (using Bray-Curtis distance)
@@ -232,7 +232,7 @@ def plot_roc_curves(predictions_list,
     
 ## run baseline linear model on raw data (equivalent to debias-m's model without the bias inference)    
 lr=LogisticRegression(penalty='none', 
-                      max_iter=1e3, 
+                      max_iter=int(1e3), 
                       solver='newton-cg'
                       )
 

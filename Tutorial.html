@@ -427,7 +427,9 @@ classifier. For this analysis, we use the collection of HIV studies that
 is available on <a
 href="https://www.synapse.org/#!Synapse:syn18406854">Synapse</a>. For a
 full set of analyses performed by DEBIAS-M on this dataset, please refer
-to the <a href="10.1101/2024.02.09.579716">DEBIAS-M publication</a>.</p>
+to the <a
+href="https://www.biorxiv.org/content/10.1101/2024.02.09.579716v1">DEBIAS-M
+manuscript</a>.</p>
 <div id="loading-packages-data" class="section level2">
 <h2>Loading packages, data</h2>
 <pre class="python"><code>## import packages
@@ -466,7 +468,7 @@ def load_HIVRC(data_path):
     return((df, md))
 
 
-df, md = data_loading.load_HIVRC(data_path=&#39;.&#39;) ## this assumes the data is downloaded to the same directory, can change as needed
+df, md = load_HIVRC(data_path=&#39;.&#39;) ## this assumes the data is downloaded to the same directory, can change as needed
 X_with_batch = pd.concat([pd.Series(pd.Categorical(md.Study).codes, 
                                     index=md.index, 
                                     name=&#39;batch&#39;),
@@ -520,7 +522,7 @@ dmc=DebiasMClassifier(x_val=X_with_batch.loc[~train_inds].values) ## provide the
 dmc.fit(X_with_batch.loc[train_inds].values, md.label.loc[train_inds].values) ## the read counts and labels for the training studies
 
 ## transform the data
-x_dmc=dmc.transform(x_with_batch)
+x_dmc=dmc.transform(X_with_batch)
 
 # Generate a PCoA plot
 ## Compute a distance matrix (using Bray-Curtis distance)
@@ -573,7 +575,7 @@ def plot_roc_curves(predictions_list,
     
 ## run baseline linear model on raw data (equivalent to debias-m&#39;s model without the bias inference)    
 lr=LogisticRegression(penalty=&#39;none&#39;, 
-                      max_iter=1e3, 
+                      max_iter=int(1e3), 
                       solver=&#39;newton-cg&#39;
                       )
 
