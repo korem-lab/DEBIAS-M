@@ -18,7 +18,7 @@ setup(
                       'numpy', 
                       'pandas',
                       'scikit-learn', 
-                      'torch>1.13.1',
+                      'pytorch>1.13.1',
                       'pytorch-lightning>1.6',
                       'lightning-bolts>0.4.0'
                       ])
