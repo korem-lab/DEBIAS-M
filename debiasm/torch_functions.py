@@ -1,10 +1,19 @@
+import warnings
+warnings.filterwarnings("ignore",
+                        ".*Consider increasing the value of the `num_workers` argument*")
+warnings.filterwarnings("ignore", '.*In the future*')
+
+import logging
+logging.getLogger("pytorch_lightning").setLevel(logging.FATAL)
+
+
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LogisticRegression, LinearRegression
 
 import pytorch_lightning as pl
 import torch
-from pytorch_lightning import LightningModule, Trainer, seed_everything
+from pytorch_lightning import LightningModule, Trainer, seed_everything, LightningDataModule
 from torch import Tensor, nn
 from torch.nn import functional as F
 from torch.nn.functional import softmax, pairwise_distance
@@ -12,11 +21,12 @@ from torch.optim import Adam
 from torch.optim.optimizer import Optimizer
 from torchmetrics.functional import accuracy
 
-from pl_bolts.datamodules import SklearnDataModule
+from .pl_bolt_sklearn_module import SklearnDataModule
 
 from argparse import ArgumentParser
 from typing import Any, Dict, List, Tuple, Type
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
+
 
 def rescale(xx):
     return(xx/xx.sum(axis=1)[:, np.newaxis] )
@@ -78,7 +88,7 @@ class PL_DEBIASM(pl.LightningModule):
         batch_inds, x = x[:, 0], x[:, 1:]
         x = F.normalize( torch.pow(2, self.batch_weights[batch_inds.long()] ) * x, p=1 )
         x = self.linear(x)
-        y_hat = softmax(x)
+        y_hat = softmax(x, dim=1)
         return y_hat
 
     
@@ -212,9 +222,10 @@ def DEBIASM_train_and_pred(X_train,
     if batch_size is None:
         batch_size=X_train.shape[0]
     
+    
     baseline_mod = LogisticRegression(max_iter=2500)
     baseline_mod.fit(rescale( X_train[:, 1:]), y_train)
-        
+    
         
     model = PL_DEBIASM(X = torch.tensor( np.vstack((X_train, X_val)) ),
                        batch_sim_strength = batch_sim_strength,
@@ -227,6 +238,7 @@ def DEBIASM_train_and_pred(X_train,
                        prediction_loss=prediction_loss
                        )
     
+    
     ## initialize parameters to lbe similar to standard logistic regression
     model.linear.weight.data[0]=-torch.tensor( baseline_mod.coef_[0] )
     model.linear.weight.data[1]= torch.tensor( baseline_mod.coef_[0] )
@@ -236,7 +248,7 @@ def DEBIASM_train_and_pred(X_train,
     
     if prediction_loss!=F.cross_entropy:
         y_train=to_categorical(y_train, num_classes=y_train.max() + 1).astype(float)
-        
+    
     
     ## build pl dataloader
     dm = SklearnDataModule(X_train, 
@@ -244,20 +256,22 @@ def DEBIASM_train_and_pred(X_train,
                            val_split=val_split,
                            test_split=test_split
                            )
-
+    
     ## run training
     trainer = pl.Trainer(logger=False, 
-                         checkpoint_callback=False,
+                         enable_checkpointing=False,
                          callbacks=[EarlyStopping(monitor="val_loss", mode="min", patience=2)], 
                          check_val_every_n_epoch=2, 
-                         weights_summary=None, 
-                         progress_bar_refresh_rate=0,#verbose, 
-                         min_epochs=min_epochs
+                         enable_model_summary=False, 
+                         enable_progress_bar=False,
+                         min_epochs=min_epochs, 
+                         max_epochs=1000
                          )
+    
     trainer.fit(model, 
                 train_dataloaders=dm.train_dataloader(), 
                 val_dataloaders=dm.val_dataloader()
-               )
+                )
     
     ## get val predictions
     val_preds = model.forward( torch.tensor( X_val ).float() )[:, 1].detach().numpy()
@@ -321,9 +335,8 @@ class PL_DEBIASM_log_additive(pl.LightningModule):
         batch_inds, x = x[:, 0], x[:, 1:]
         x = x + self.batch_weights[batch_inds.long()]
         x=F.normalize(x, p=1)
-#         F.normalize( torch.pow(2, self.batch_weights[batch_inds.long()] ) * x, p=1 )
         x = self.linear(self.processing_func(x))
-        y_hat = softmax(x)
+        y_hat = softmax(x, dim=1)
         return y_hat
 
     
@@ -458,8 +471,8 @@ def DEBIASM_train_and_pred_log_additive(X_train,
     
     baseline_mod = LogisticRegression(max_iter=2500)
     baseline_mod.fit( X_train[:, 1:], y_train)
-        
-        
+
+    
     model = PL_DEBIASM_log_additive(X = torch.tensor( np.vstack((X_train, X_val)) ),
                                     batch_sim_strength = batch_sim_strength,
                                     input_dim = X_train.shape[1]-1, 
@@ -475,28 +488,29 @@ def DEBIASM_train_and_pred_log_additive(X_train,
     model.linear.weight.data[0]=-torch.tensor( baseline_mod.coef_[0] )
     model.linear.weight.data[1]= torch.tensor( baseline_mod.coef_[0] )
     
-    
     y_train = torch.tensor( y_train ).long().detach().numpy() #due to windows numpy bug
     
     if prediction_loss != F.cross_entropy:
         y_train=to_categorical(y_train, num_classes=y_train.max() + 1).astype(float)
-
+    
     ## build pl dataloader
     dm = SklearnDataModule(X_train, 
                            y_train,
                            val_split=val_split,
                            test_split=test_split
                            )
-
+    
     ## run training
     trainer = pl.Trainer(logger=False, 
-                         checkpoint_callback=False,
+                         enable_checkpointing=False,
                          callbacks=[EarlyStopping(monitor="val_loss", mode="min", patience=2)], 
                          check_val_every_n_epoch=2, 
-                         weights_summary=None, 
-                         progress_bar_refresh_rate=0, 
-                         min_epochs=min_epochs
+                         enable_model_summary=False, 
+                         enable_progress_bar=False,
+                         min_epochs=min_epochs, 
+                         max_epochs=1000
                          )
+    
     trainer.fit(model, 
                 train_dataloaders=dm.train_dataloader(), 
                 val_dataloaders=dm.val_dataloader()

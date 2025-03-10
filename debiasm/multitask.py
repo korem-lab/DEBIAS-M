@@ -1,3 +1,10 @@
+import warnings
+warnings.filterwarnings("ignore",
+                        ".*Consider increasing the value of the `num_workers` argument*")
+warnings.filterwarnings("ignore", '.*In the future*')
+
+import logging
+logging.getLogger("pytorch_lightning").setLevel(logging.FATAL)
 
 import numpy as np
 import pandas as pd
@@ -24,7 +31,7 @@ from torch.nn.functional import softmax, pairwise_distance
 from torch.optim import Adam
 from torch.optim.optimizer import Optimizer
 from torchmetrics.functional import accuracy
-from pl_bolts.datamodules import SklearnDataModule
+from .pl_bolt_sklearn_module import SklearnDataModule
 from sklearn.base import BaseEstimator
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 
@@ -95,7 +102,7 @@ class PL_DEBIAS_multitask(pl.LightningModule):
                         p=1 )
         
         # a separate linear / softmax layer for each task
-        y_hats = [softmax(self.linear_weights[i](x))[:, -1] ## this implementation assumes all tasks are binary
+        y_hats = [softmax(self.linear_weights[i](x), dim=1)[:, -1] ## this implementation assumes all tasks are binary
                   for i in range(self.hparams.n_tasks)]
         return y_hats
 
@@ -279,15 +286,17 @@ def DEBIASM_mutlitask_train_and_pred(X_train,
                            )
 
     ## run training
-    trainer = pl.Trainer(logger=False, 
-                         checkpoint_callback=False,
-                         callbacks=[EarlyStopping(monitor="val_loss",
+    trainer = pl.Trainer(
+                         logger=False, 
+                         enable_checkpointing=False,
+                         callbacks=[EarlyStopping(monitor="val_loss", 
                                                   mode="min", 
                                                   patience=2)], 
                          check_val_every_n_epoch=2, 
-                         weights_summary=None, 
-                         progress_bar_refresh_rate=0, 
-                         min_epochs=min_epochs
+                         enable_model_summary=False, 
+                         enable_progress_bar=False,
+                         min_epochs=min_epochs, 
+                         max_epochs=1000
                          )
     trainer.fit(model, 
                 train_dataloaders=dm.train_dataloader(), 

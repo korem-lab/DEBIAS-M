@@ -1,4 +1,10 @@
+import warnings
+warnings.filterwarnings("ignore",
+                        ".*Consider increasing the value of the `num_workers` argument*")
+warnings.filterwarnings("ignore", '.*In the future*')
 
+import logging
+logging.getLogger("pytorch_lightning").setLevel(logging.FATAL)
 
 import numpy as np
 import pandas as pd
@@ -13,14 +19,11 @@ from torch.nn.functional import softmax, pairwise_distance
 from torch.optim import Adam
 from torch.optim.optimizer import Optimizer
 from torchmetrics.functional import accuracy
-
-from pl_bolts.datamodules import SklearnDataModule
+from .pl_bolt_sklearn_module import SklearnDataModule
 
 from argparse import ArgumentParser
 from typing import Any, Dict, List, Tuple, Type
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
-
-
     
 import numpy as np
 import pandas as pd
@@ -107,10 +110,6 @@ class PL_SBCMP_regression(pl.LightningModule):
         # PyTorch mse loss
         loss = self.prediction_loss(y_hat.squeeze(-1), y,) * self.y_loss_scaling
         
-#         print('MSE loss: {:.3e}'.format(
-#             ( F.mse_loss(y_hat.squeeze(-1), y, reduction="sum") * self.y_loss_scaling ).item())
-#              )  
-        
         # L1 regularizer
         if self.hparams.l1_strength > 0:
             l1_reg = self.linear.weight.abs().sum()
@@ -134,17 +133,11 @@ class PL_SBCMP_regression(pl.LightningModule):
             loss += sum( [pairwise_distance(x1, a) for a in x1] ).sum() *\
                                     self.batch_sim_str
             
-#             print('Domain sim: {:.3e}'.format( 
-#                     ( sum( [pairwise_distance(x1, a) for a in x1] ).sum() *\
-#                                     self.batch_sim_str ).item()
-#                                 ) )
 
         if self.hparams.weighting_l2_strength > 0:
             # L2 regularizer for weighting parameter
             l2_reg = self.batch_weights.pow(2).sum()
-                  
-#             print('WL2 reg: {:.3e}'.format(
-#                 ( self.hparams.weighting_l2_strength * l2_reg ).item() ) )
+            
             loss += self.hparams.weighting_l2_strength * l2_reg
 
 
@@ -253,14 +246,15 @@ def DEBIASM_regression_train_and_pred(X_train,
 
     ## run training
     trainer = pl.Trainer(logger=False, 
-                         checkpoint_callback=False,
-                         callbacks=[EarlyStopping(monitor="val_loss", 
+                         enable_checkpointing=False,
+                         callbacks=[EarlyStopping(monitor="val_loss",
                                                   mode="min", 
                                                   patience=2)], 
                          check_val_every_n_epoch=2, 
-                         weights_summary=None, 
-                         progress_bar_refresh_rate=0, 
-                         min_epochs=min_epochs
+                         enable_model_summary=False, 
+                         enable_progress_bar=False,
+                         min_epochs=min_epochs, 
+                         max_epochs=1000
                          )
     
     trainer.fit(model, 
