@@ -13,7 +13,7 @@ setup(
     url='https://github.com/korem-lab/DEBIAS-M',
     packages=['debiasm'],
     include_package_data=True,
-    python_requires='>3.6.0',
+    python_requires='>=3.11.0',
     install_requires=[
                       'numpy', 
                       'pandas',
