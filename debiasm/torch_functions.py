@@ -227,7 +227,7 @@ def DEBIASM_train_and_pred(X_train,
     baseline_mod.fit(rescale( X_train[:, 1:]), y_train)
     
         
-    model = PL_DEBIASM(X = torch.tensor( np.vstack((X_train, X_val)).astype(float) ),
+    model = PL_DEBIASM(X = torch.tensor( np.vstack((X_train, X_val)) ),
                        batch_sim_strength = batch_sim_strength,
                        input_dim = X_train.shape[1]-1, 
                        num_classes = 2, 
@@ -247,7 +247,7 @@ def DEBIASM_train_and_pred(X_train,
     y_train = torch.tensor( y_train ).long().detach().numpy() #due to windows numpy bug
     
     if prediction_loss!=F.cross_entropy:
-        y_train=to_categorical(y_train, num_classes=y_train.max() + 1).astype(float)
+        y_train=to_categorical(y_train, num_classes=y_train.max() + 1)
     
     
     ## build pl dataloader
