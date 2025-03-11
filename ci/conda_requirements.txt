@@ -3,4 +3,3 @@ nose
 pep8
 flake8
 python
-pytorch
