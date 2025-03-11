@@ -13,12 +13,12 @@ setup(
     url='https://github.com/korem-lab/DEBIAS-M',
     packages=['debiasm'],
     include_package_data=True,
-    python_requires='>=3.11.0',
+    python_requires='>3.6.0',
     install_requires=[
                       'numpy', 
                       'pandas',
                       'scikit-learn', 
-                      'pytorch>1.13.1',
+                      'torch>1.13.1',
                       'pytorch-lightning>1.6',
                       'lightning-bolts>0.4.0'
                       ])
