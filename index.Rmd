@@ -78,18 +78,17 @@ DEBIAS-M is designed to work across multiple microbiome studies, and has a varie
  * [__DebiasMClassifierLogAdd__](DebiasMClassifierLogAdd.html) - bias correction in logarithmic space
 
 <br>
+For any support using DEBIAS-M, please use our <a href="https://github.com/korem-lab/DEBIAS-M/issues">issues page</a> or email [gia2105@columbia.edu](gia2105@columbia.edu). 
+<br> <br>
 
-<!-- <div class='alert'> -->
-<!-- These `github.io` documentation pages are currently under development. While these will be completed soon, for the time being we recommend following the github `README.md`. -->
-<!-- </div> -->
 
 ## Installation
 
 ```bashform
-pip install git+https://github.com/korem-lab/DEBIAS-M.git
+pip install DEBIAS-M
 ```
 
-The only dependencies for installation are `python<3.11`,  `scikit-learn`, `torch<=1.13.1`, `pytorch-lightning<=1.6`
+The dependencies for installation are `python`,  `scikit-learn`, `torch`, and `pytorch-lightning`
 <br><br>
 
 ## Loading
@@ -152,9 +151,6 @@ For more details, we provide further background and walkthrough demonstrations f
 
 <br>
 
-Please report any issues faced while using DEBIAS-M in our [Issues Page](https://github.com/korem-lab/DEBIAS-M/issues), or email [gia2105@columbia.edu](gia2105@columbia.edu). 
-
-<br>
 
 ## Citation
 <style>
