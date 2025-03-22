@@ -7,19 +7,19 @@ def read(fname):
 
 setup(
     name='DEBIAS-M',
-    version='0.0.1',
+    version='0.0.2',
     author='George Austin', 
     author_email='gia2105@columbia.edu', 
     url='https://github.com/korem-lab/DEBIAS-M',
     packages=['debiasm'],
     include_package_data=True,
-    python_requires='<3.11.0',
+    python_requires='>3.6.0',
     install_requires=[
-                      'numpy', 
+                      'numpy<=1.26.4', 
                       'pandas',
                       'scikit-learn', 
-                      'torch<=1.13.1',
-                      'pytorch-lightning<=1.6',
-                      'lightning-bolts==0.4.0'
+                      'torch',
+                      'pytorch-lightning>1.6',
+                      'lightning-bolts>0.4.0'
                       ])
                       

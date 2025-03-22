@@ -44,9 +44,11 @@ class DebiasMClassifier(BaseEstimator):
         self : object
             Returns the instance itself.
         """
+        
         if self.batch_str=='infer':
             self.batch_str = batch_weight_feature_and_nbatchpairs_scaling(1e4, pd.DataFrame(np.vstack((X, self.x_val)) ) )
             
+        
         self.classes_ = np.unique(y)
         self.num_classes_ = self.classes_.shape[0]
         if self.num_classes_==2:

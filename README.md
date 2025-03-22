@@ -8,21 +8,25 @@
 
 Welcome to DEBIAS-M! This is a python package for processing bias correction in microbiome studies, that facilitates data harmonization, domain adaptation, predictive modeling, and batch correction. Uses samples from multiple studies in a count or relative abundance matrix format. Visit the [DEBIAS-M website](https://korem-lab.github.io/DEBIAS-M/) for the most detailed documentation.
 
+For any support using DEBIAS-M, please use our <a href="https://github.com/korem-lab/DEBIAS-M/issues">issues page</a> or email: gia2105@columbia.edu.
+
 
 ## Installation
 DEBIAS-M can be installed with pip through the following command:
-`pip install git+https://github.com/korem-lab/DEBIAS-M.git`
-As DEBIAS-M is a light package, the install time requires less than a minute on a standard machine.
+```bash
+pip install DEBIAS-M
+```
+The install time requires less than a minute on a standard machine.
 
 
 ## System requirements
-Per our `setup.py` file: `python<3.11`,`numpy`, `pandas`, `torch==1.10.2`, `pytorch-lightning==1.5.10`, and `lightning-bolts==0.4.0`. No non-standard hardware is required for DEBIAS-M.
+Per our `setup.py` file: `python<`,`numpy`, `pandas`, `torch`, and `pytorch-lightning`. No non-standard hardware is required for DEBIAS-M.
 
 ## Instructions for use
 To begin, we recommend running the example demo we provide, which runs DEBIAS-M on a randomly generated dataset. We offer examples for all DEBIAS-M classes in the [DEBIAS-M website](https://korem-lab.github.io/DEBIAS-M/). 
 
 ## DEBIAS-M Demo
-See the `Example.ipynb` notebook to see how to use the package. This notebook demonstrates the inputs and outputs of DEBIAS-M implementation (which mimicks the standard scikit-learn structure), and fits a DEBIAS-M model on the synthetic data. For the generated example of 480 samples and 100 features, the DEBIAS-M example completes in less than a minute. We provide a copy of the walkthrough code below. For further details on reproducing all results on our main analyses, please refer to our github repository containing the analysis code: https://github.com/korem-lab/v1-DEBIAS-M-Analysis/. Refer to the `Multitask-example.ipynb` notebook for an example running DEBIAS-M on multiple phenotypes at once.
+See the `Example.ipynb` notebook to see how to use the package. This notebook demonstrates the inputs and outputs of DEBIAS-M implementation (which mimicks the standard scikit-learn structure), and fits a DEBIAS-M model on the synthetic data. For the generated example of 480 samples and 100 features, the DEBIAS-M example completes in less than a minute. We provide a copy of the walkthrough code below. Refer to the `Multitask-example.ipynb` notebook for an example running DEBIAS-M on multiple phenotypes at once.
 
 ```python
 import numpy as np
@@ -113,29 +117,6 @@ dmc = DebiasMClassifier(x_val=X_val) ## give it the held-out inputs to account f
 dmc.fit(X_train, y_train)
 print('finished training!')
 ```
-    GPU available: False, used: False
-    TPU available: False, using: 0 TPU cores
-    IPU available: False, using: 0 IPUs
-    /Users/george/opt/anaconda3/envs/pl2/lib/python3.6/site-packages/pytorch_lightning/trainer/data_loading.py:133: UserWarning: The dataloader, val_dataloader 0, does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` (try 8 which is the number of cpus on this machine) in the `DataLoader` init to improve performance.
-      f"The dataloader, {name}, does not have many workers which may be a bottleneck."
-    /Users/george/Desktop/sandbox/sandbox2/package_dev/DEBIAS-M/debiasm/torch_functions.py:75: UserWarning: Implicit dimension choice for softmax has been deprecated. Change the call to include dim=X as an argument.
-      y_hat = softmax(x)
-    /Users/george/opt/anaconda3/envs/pl2/lib/python3.6/site-packages/pytorch_lightning/trainer/data_loading.py:133: UserWarning: The dataloader, train_dataloader, does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` (try 8 which is the number of cpus on this machine) in the `DataLoader` init to improve performance.
-      f"The dataloader, {name}, does not have many workers which may be a bottleneck."
-    /Users/george/opt/anaconda3/envs/pl2/lib/python3.6/site-packages/pytorch_lightning/trainer/data_loading.py:433: UserWarning: The number of training samples (22) is smaller than the logging interval Trainer(log_every_n_steps=50). Set a lower value for log_every_n_steps if you want to see logs for the training epoch.
-      f"The number of training samples ({self.num_training_batches}) is smaller than the logging interval"
-    Trainer was signaled to stop but required minimum epochs (25) or minimum steps (None) has not been met. Training will continue...
-    Trainer was signaled to stop but required minimum epochs (25) or minimum steps (None) has not been met. Training will continue...
-    Trainer was signaled to stop but required minimum epochs (25) or minimum steps (None) has not been met. Training will continue...
-    Trainer was signaled to stop but required minimum epochs (25) or minimum steps (None) has not been met. Training will continue...
-    Trainer was signaled to stop but required minimum epochs (25) or minimum steps (None) has not been met. Training will continue...
-    Trainer was signaled to stop but required minimum epochs (25) or minimum steps (None) has not been met. Training will continue...
-    Trainer was signaled to stop but required minimum epochs (25) or minimum steps (None) has not been met. Training will continue...
-    Trainer was signaled to stop but required minimum epochs (25) or minimum steps (None) has not been met. Training will continue...
-    Trainer was signaled to stop but required minimum epochs (25) or minimum steps (None) has not been met. Training will continue...
-    Trainer was signaled to stop but required minimum epochs (25) or minimum steps (None) has not been met. Training will continue...
-
-
     finished training!
 
 

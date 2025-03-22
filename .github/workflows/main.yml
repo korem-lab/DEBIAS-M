@@ -39,7 +39,7 @@ jobs:
 
       - name: Install conda reqs
         shell: bash -l {0}
-        run: conda install --file ci/conda_requirements.txt -c biocore
+        run: conda install --file ci/conda_requirements.txt -c biocore pytorch
       
       - name: Install DEBIAS-M
         shell: bash -l {0}
