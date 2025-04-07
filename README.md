@@ -133,9 +133,6 @@ roc_auc_score(y_val, dmc.predict_proba(X_val)[:, 1])
 
     0.4784313725490196
 
-
-
-
 ### Extract the the 'DEBIAS-ed' data
 
 ```python
@@ -151,5 +148,6 @@ X_debiassed[:5, :5]
 
 
 
-
-
+Citing DEBIAS-M
+-----------------------
+Austin, G.I., Brown Kav, A., ElNaggar, S. et al. Processing-bias correction with DEBIAS-M improves cross-study generalization of microbiome-based prediction models. Nat Microbiol (2025). https://doi.org/10.1038/s41564-025-01954-4
