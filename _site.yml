@@ -38,7 +38,7 @@ navbar:
     icon: fa-binoculars
     menu:
     - text: DEBIAS-M Manuscript
-      href: https://www.biorxiv.org/content/10.1101/2024.02.09.579716v1
+      href: https://doi.org/10.1038/s41564-025-01954-4
   right:
   - icon: fa-comment
     href: https://github.com/korem-lab/DEBIAS-M/issues

@@ -76,7 +76,7 @@ klippy::klippy(c('r', 'python', 'bash'),
 
 # Tutorial
 
-In this page, we offer an example analysis of the DEBIAS-M classifier. For this analysis, we use the collection of HIV studies that is available on [Synapse](https://www.synapse.org/#!Synapse:syn18406854). For a full set of analyses performed by DEBIAS-M on this dataset, please refer to the [DEBIAS-M manuscript](https://www.biorxiv.org/content/10.1101/2024.02.09.579716v1).
+In this page, we offer an example analysis of the DEBIAS-M classifier. For this analysis, we use the collection of HIV studies that is available on [Synapse](https://www.synapse.org/#!Synapse:syn18406854). For a full set of analyses performed by DEBIAS-M on this dataset, please refer to the [DEBIAS-M manuscript](https://doi.org/10.1038/s41564-025-01954-4).
 
 
 Loading packages, data
@@ -273,5 +273,5 @@ The multitask DEBIAS-M classifier<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Implementation of a DEBIAS-M regressor<br>
 <br>
-For more background on DEBIAS-M, refer to [our manuscript](https://www.biorxiv.org/content/10.1101/2024.02.09.579716v1). 
+For more background on DEBIAS-M, refer to [our manuscript](https://doi.org/10.1038/s41564-025-01954-4). 
 

@@ -101,7 +101,7 @@ from debiasm import DebiasMClassifier, DebiasMRegressor, MultitaskDebiasMClassif
 
 ## Background
 
-It has been shown that each experimental processing and bioinformatic step in microbiome analysis pipelines has distinct biases that multiplicatively over- and understate the relative abundance of various microbes. As a result, one can find significant differences even when the same sample is processed in different protocols. This would typically manifest as strong study- and batch-effects. DEBIAS-M addresses this issue using a model of multiplicative taxon-specific biases combined with 2 key assumption: (1) the average microbiome composition of different batches/studies should be similar; (2) there is an underlying association between the microbiome and provided phenotype that is diminished by bias and will become stronger when bias is corrected. For more details, please refer to [our manuscript](https://www.biorxiv.org/content/10.1101/2024.02.09.579716v1), where we show that DEBIAS-M improves batch correction and predictive modeling across microbiome studies, and changes the underlying data using explainable and quasi-mechanistic parameters. 
+It has been shown that each experimental processing and bioinformatic step in microbiome analysis pipelines has distinct biases that multiplicatively over- and understate the relative abundance of various microbes. As a result, one can find significant differences even when the same sample is processed in different protocols. This would typically manifest as strong study- and batch-effects. DEBIAS-M addresses this issue using a model of multiplicative taxon-specific biases combined with 2 key assumption: (1) the average microbiome composition of different batches/studies should be similar; (2) there is an underlying association between the microbiome and provided phenotype that is diminished by bias and will become stronger when bias is corrected. For more details, please refer to [our manuscript](https://doi.org/10.1038/s41564-025-01954-4), where we show that DEBIAS-M improves batch correction and predictive modeling across microbiome studies, and changes the underlying data using explainable and quasi-mechanistic parameters. 
 <br><br>
 The inputs, outputs, and syntax within the DEBIAS-M package are built using a scikit-learn base, and are designed to have similar functionality to standard scikit-learn classes, such as `dmc.fit(X, Y)`, `dmc.transform(X)`, and `dmc.predict_proba(X)`. For example: 
 
@@ -164,6 +164,8 @@ For more details, we provide further background and walkthrough demonstrations f
 </style>
 
 <div class="citation">
-Austin, G.I. et al. "Processing-bias correction with DEBIAS-M improves cross-study generalization of microbiome-based prediction models" (2024). **https://doi.org/10.1101/2024.02.09.579716**
+Austin, G.I., Brown Kav, A., ElNaggar, S. et al. Processing-bias correction with DEBIAS-M improves cross-study generalization of microbiome-based prediction models. Nat Microbiol (2025). **https://doi.org/10.1038/s41564-025-01954-4**
 </div>
+
+
 

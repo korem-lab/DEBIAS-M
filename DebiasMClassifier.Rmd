@@ -237,5 +237,5 @@ The multitask DEBIAS-M classifier<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Implementation of a DEBIAS-M regressor<br>
 <br>
-For more background on DEBIAS-M, refer to [our manuscript](https://www.biorxiv.org/content/10.1101/2024.02.09.579716v1). 
+For more background on DEBIAS-M, refer to [our manuscript](https://doi.org/10.1038/s41564-025-01954-4). 
 
