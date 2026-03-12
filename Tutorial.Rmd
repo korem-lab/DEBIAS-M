@@ -93,11 +93,14 @@ from sklearn.metrics import roc_curve, auc
 from sklearn.metrics import pairwise_distances
 from sklearn.linear_model import LogisticRegression
 from skbio.stats.ordination import pcoa
-import matplotlib.pyplot as plt
 
+sns.set(rc={'axes.facecolor':'white', 
+            'figure.facecolor':'white', 
+            'axes.edgecolor':'black', 
+            'grid.color': 'black'
+            }, 
+       font_scale=2)
 
-import numpy as np
-import pandas as pd
 import glob
 import os
 
@@ -224,7 +227,7 @@ def plot_roc_curves(predictions_list,
 
     plt.plot([0, 1], [0, 1], 'k--', lw=5)
     plt.xlabel('False Positive Rate')
-    plt.ylabel('T"rue Positive Rate')
+    plt.ylabel('True Positive Rate')
     plt.title('ROC Curve')
     plt.legend(loc='lower right')
     plt.grid(False)
@@ -235,8 +238,9 @@ lr=LogisticRegression(penalty='none',
                       max_iter=int(1e3), 
                       solver='newton-cg'
                       )
-
-lr.fit(rescale(df.loc[train_inds]), md.label.loc[train_inds])
+                      
+df=pd.DataFrame( rescale(df.values), index=df.index, columns=df.columns)
+lr.fit(df.loc[train_inds], md.label.loc[train_inds])
 plot_roc_curves([lr.predict_proba(df.loc[~train_inds])[:, 1],
                  dmc.predict_proba(X_with_batch.loc[~train_inds].values)[:, 1] ], 
                  md.label.values[~train_inds.values], 
